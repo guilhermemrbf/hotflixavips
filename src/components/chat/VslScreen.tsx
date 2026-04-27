@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CtaButton } from "./CtaButton";
 
 interface Props {
@@ -8,69 +8,133 @@ interface Props {
 
 const REVEAL_AFTER_SECONDS = 5;
 
+// Detecta iOS / iPadOS / Safari — eles têm regras de autoplay mais duras:
+// autoplay COM som só funciona dentro de um gesto do usuário (touchend/click),
+// e o gesto precisa disparar muted=false + play() de forma SÍNCRONA.
+function detectIOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const isiOS = /iPad|iPhone|iPod/.test(ua);
+  // iPadOS 13+ se apresenta como Mac — detecta por touch
+  const isiPadOS =
+    /Macintosh/.test(ua) && typeof document !== "undefined" &&
+    "ontouchend" in document;
+  return isiOS || isiPadOS;
+}
+
 export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [watched, setWatched] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [muted, setMuted] = useState(false);
+  // Começa MUDO por padrão — garante que o vídeo toca em qualquer browser,
+  // especialmente iOS/Safari. O áudio é destravado no primeiro gesto.
+  const [muted, setMuted] = useState(true);
   const [ready, setReady] = useState(false);
+  const audioUnlockedRef = useRef(false);
 
-  // Autoplay COM som por padrão — se o browser bloquear, cai pra mudo
-  // e destrava no primeiro toque do usuário na página.
+  // 1) Garantir autoplay (mudo) em todos os browsers, incluindo iOS Safari.
+  //    No iOS, atributos `muted` + `playsinline` são OBRIGATÓRIOS.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = false;
-    v.volume = 1;
+    const isIOS = detectIOS();
 
-    const tryPlayWithSound = async () => {
+    // iOS exige muted=true no DOM antes do primeiro play(). Só em browsers
+    // não-iOS arriscamos autoplay com som (Chrome desktop com MEI etc).
+    v.muted = true;
+    v.volume = 1;
+    // atributo HTML (não só prop) — alguns browsers olham o atributo
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    // @ts-expect-error — webkit-only
+    v.setAttribute("webkit-playsinline", "");
+
+    const tryPlay = async () => {
       try {
-        v.muted = false;
         await v.play();
-        setMuted(false);
       } catch {
-        // Browser bloqueou — cai pra mudo pra não travar o fluxo
-        v.muted = true;
-        setMuted(true);
-        try {
-          await v.play();
-        } catch {
-          /* ignore */
-        }
+        /* aguardará o gesto */
       }
     };
-
-    tryPlayWithSound();
 
     const onCanPlay = () => {
       setReady(true);
-      if (v.paused) tryPlayWithSound();
+      if (v.paused) tryPlay();
     };
     v.addEventListener("loadeddata", onCanPlay);
     v.addEventListener("canplay", onCanPlay);
+    tryPlay();
 
-    // Fallback: no primeiro toque/clique na página, liga o som
-    const unlockAudio = () => {
-      if (!v) return;
-      if (v.muted) {
+    // Em browsers desktop (NÃO iOS), tenta autoplay com som logo após
+    // o primeiro frame — muitos browsers permitem se houve engagement prévio.
+    if (!isIOS) {
+      const onPlaying = () => {
+        if (audioUnlockedRef.current) return;
         v.muted = false;
-        setMuted(false);
         const p = v.play();
-        if (p && typeof p.catch === "function") p.catch(() => {});
-      }
-      document.removeEventListener("touchstart", unlockAudio);
-      document.removeEventListener("click", unlockAudio);
-    };
-    document.addEventListener("touchstart", unlockAudio, { once: true });
-    document.addEventListener("click", unlockAudio, { once: true });
+        if (p && typeof p.then === "function") {
+          p.then(() => {
+            audioUnlockedRef.current = true;
+            setMuted(false);
+          }).catch(() => {
+            // bloqueado — mantém mudo, usuário destrava no primeiro gesto
+            v.muted = true;
+            setMuted(true);
+          });
+        }
+        v.removeEventListener("playing", onPlaying);
+      };
+      v.addEventListener("playing", onPlaying);
+      return () => {
+        v.removeEventListener("loadeddata", onCanPlay);
+        v.removeEventListener("canplay", onCanPlay);
+        v.removeEventListener("playing", onPlaying);
+      };
+    }
 
     return () => {
       v.removeEventListener("loadeddata", onCanPlay);
       v.removeEventListener("canplay", onCanPlay);
-      document.removeEventListener("touchstart", unlockAudio);
-      document.removeEventListener("click", unlockAudio);
     };
   }, []);
+
+  // 2) Destrava o áudio no PRIMEIRO gesto do usuário.
+  //    Crítico no iOS: o handler roda síncrono dentro do gesto — sem `await`
+  //    antes de `muted=false` e `play()`. O iOS só libera áudio se a troca
+  //    acontecer dentro da mesma task do evento de toque.
+  const unlockAudio = useCallback(() => {
+    if (audioUnlockedRef.current) return;
+    const v = videoRef.current;
+    if (!v) return;
+    // Síncrono: muted=false e play() no mesmo tick do gesto
+    v.muted = false;
+    v.removeAttribute("muted");
+    v.volume = 1;
+    const p = v.play();
+    audioUnlockedRef.current = true;
+    setMuted(false);
+    if (p && typeof p.catch === "function") {
+      p.catch(() => {
+        // improvável após gesto, mas fallback mantém fluxo
+        v.muted = true;
+        setMuted(true);
+        audioUnlockedRef.current = false;
+        v.play().catch(() => {});
+      });
+    }
+  }, []);
+
+  // 3) Listener global: primeiro toque/clique em qualquer lugar já destrava o som.
+  useEffect(() => {
+    const handler = () => unlockAudio();
+    // touchend é mais confiável no iOS que touchstart para gesture-gated APIs
+    document.addEventListener("touchend", handler, { once: true, passive: true });
+    document.addEventListener("click", handler, { once: true });
+    return () => {
+      document.removeEventListener("touchend", handler);
+      document.removeEventListener("click", handler);
+    };
+  }, [unlockAudio]);
 
   // Contador de tempo assistido — libera CTA após 5s
   useEffect(() => {
@@ -84,12 +148,22 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
     return () => v.removeEventListener("timeupdate", onTime);
   }, []);
 
-  const toggleMute = () => {
+  // Toggle manual — também síncrono para respeitar a regra do iOS
+  const toggleMute = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = !v.muted;
-    setMuted(v.muted);
-  };
+    if (v.muted) {
+      v.muted = false;
+      v.removeAttribute("muted");
+      audioUnlockedRef.current = true;
+      setMuted(false);
+      const p = v.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } else {
+      v.muted = true;
+      setMuted(true);
+    }
+  }, []);
 
   const progressPct = Math.min(
     100,
@@ -109,6 +183,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               ref={videoRef}
               src={videoSrc}
               autoPlay
+              muted
               playsInline
               preload="auto"
               poster="/vsl-poster.jpg"
@@ -116,6 +191,9 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               controls={false}
               controlsList="nodownload noplaybackrate nofullscreen"
               disablePictureInPicture
+              // @ts-expect-error — atributo legado necessário pra iOS antigo
+              webkit-playsinline="true"
+              x5-playsinline="true"
             />
 
             {/* Spinner leve só enquanto o vídeo não tá pronto */}
