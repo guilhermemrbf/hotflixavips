@@ -7,9 +7,10 @@ import { PixDirect } from "./PixDirect";
 import { PaymentSuccess } from "./PaymentSuccess";
 import { Testimonials } from "./Testimonials";
 import { OrderBumpScreen } from "./OrderBumpScreen";
+import { VslScreen } from "./VslScreen";
 import leticiaPreview from "@/assets/leticia-preview.jpg";
 
-type Step = 1 | 2 | 3 | 4 | 5 | 6;
+type Step = 1 | "vsl" | 2 | 3 | 4 | 5 | 6;
 
 const PLANS: Plan[] = [
   {
@@ -145,7 +146,7 @@ export function ChatScreen() {
                     <span className="text-gradient">pode ver.</span>
                   </p>
                   <div className="mt-5">
-                    <CtaButton delay={0} onClick={() => setStep(2)}>
+                    <CtaButton delay={0} onClick={() => setStep("vsl")}>
                       QUERO VER 🔥
                     </CtaButton>
                     <p className="mt-2 text-[11px] text-muted-foreground">
@@ -157,11 +158,16 @@ export function ChatScreen() {
             </>
           )}
 
+          {/* ETAPA VSL */}
+          {step === "vsl" && (
+            <VslScreen onContinue={() => setStep(2)} />
+          )}
+
           {/* ETAPA 2 */}
           {step === 2 && (
             <>
               <button
-                onClick={() => setStep(1)}
+                onClick={() => setStep("vsl")}
                 className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
