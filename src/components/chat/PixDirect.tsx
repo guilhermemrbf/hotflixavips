@@ -215,23 +215,6 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </p>
       </div>
 
-      {/* Ação principal no mobile: copiar código */}
-      <button
-        onClick={handleCopy}
-        disabled={!pix.pix_copy_paste}
-        className={`w-full rounded-2xl px-4 py-4 text-[15px] font-extrabold transition flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] ${
-          copied
-            ? "bg-online/20 border-2 border-online text-online"
-            : "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow"
-        }`}
-      >
-        {copied ? "✓ CÓDIGO COPIADO — COLE NO APP DO BANCO" : "📋 COPIAR CÓDIGO PIX"}
-      </button>
-
-      <p className="text-center text-[12px] text-online leading-snug px-2">
-        ✅ Liberação <strong>automática</strong> assim que o Pix cair. O link do grupo abre aqui mesmo.
-      </p>
-
       <div className="rounded-2xl bg-card/60 border border-border p-4 space-y-3">
         <p className="text-[11px] font-bold uppercase tracking-wider text-primary text-center">
           Como pagar em 30 segundos
@@ -275,6 +258,23 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
           ))}
         </ol>
       </div>
+
+      {/* Ação principal no mobile: copiar código */}
+      <button
+        onClick={handleCopy}
+        disabled={!pix.pix_copy_paste}
+        className={`w-full rounded-2xl px-4 py-4 text-[15px] font-extrabold transition flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] ${
+          copied
+            ? "bg-online/20 border-2 border-online text-online"
+            : "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow"
+        }`}
+      >
+        {copied ? "✓ CÓDIGO COPIADO — COLE NO APP DO BANCO" : "📋 COPIAR CÓDIGO PIX"}
+      </button>
+
+      <p className="text-center text-[12px] text-online leading-snug px-2">
+        ✅ Liberação <strong>automática</strong> assim que o Pix cair. O link do grupo abre aqui mesmo.
+      </p>
 
       <div className="rounded-2xl bg-amber-500/10 border border-amber-500/40 p-4 space-y-2">
         <div className="flex items-start gap-2">
