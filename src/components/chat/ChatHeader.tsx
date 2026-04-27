@@ -1,4 +1,4 @@
-import leticiaAvatar from "@/assets/leticia-avatar.jpg";
+import leticiaAvatar from "@/assets/leticia-avatar.webp";
 
 export function ChatHeader() {
   return (

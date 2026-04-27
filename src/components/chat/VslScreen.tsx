@@ -184,7 +184,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               autoPlay
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               poster="/vsl-poster.jpg"
               className="absolute inset-0 h-full w-full object-cover"
               controls={false}

@@ -1,14 +1,35 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { ChatHeader } from "./ChatHeader";
 import { Bubble, TypingBubble } from "./Bubble";
 import { CtaButton } from "./CtaButton";
 import { Plan, PlanCard } from "./PlanCard";
-import { PixDirect } from "./PixDirect";
-import { PaymentSuccess } from "./PaymentSuccess";
-import { Testimonials } from "./Testimonials";
-import { OrderBumpScreen } from "./OrderBumpScreen";
-import { VslScreen } from "./VslScreen";
-import leticiaPreview from "@/assets/leticia-preview.jpg";
+import leticiaPreview from "@/assets/leticia-preview.webp";
+
+// Code-splitting: telas pesadas só carregam quando necessário,
+// reduzindo drasticamente o JS inicial.
+const VslScreen = lazy(() =>
+  import("./VslScreen").then((m) => ({ default: m.VslScreen })),
+);
+const OrderBumpScreen = lazy(() =>
+  import("./OrderBumpScreen").then((m) => ({ default: m.OrderBumpScreen })),
+);
+const PixDirect = lazy(() =>
+  import("./PixDirect").then((m) => ({ default: m.PixDirect })),
+);
+const PaymentSuccess = lazy(() =>
+  import("./PaymentSuccess").then((m) => ({ default: m.PaymentSuccess })),
+);
+const Testimonials = lazy(() =>
+  import("./Testimonials").then((m) => ({ default: m.Testimonials })),
+);
+
+function LazyFallback() {
+  return (
+    <div className="flex items-center justify-center py-10">
+      <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+    </div>
+  );
+}
 
 type Step = 1 | "vsl" | 2 | 3 | 4 | 5 | 6;
 
@@ -57,22 +78,20 @@ export function ChatScreen() {
   const [stage3, setStage3] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Preload da VSL assim que o usuário está na tela 1
-  // — começa a baixar em background enquanto lê o chat.
+  // Warm-up leve: apenas o poster e o chunk JS da VSL enquanto o usuário
+  // lê o chat. O VÍDEO (6MB) só baixa quando ele clicar em QUERO VER —
+  // isso reduz muito o uso de banda no carregamento inicial.
   useEffect(() => {
     if (step !== 1) return;
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "video";
-    link.href = "/vsl.mp4";
-    link.setAttribute("fetchpriority", "high");
-    document.head.appendChild(link);
-    // Prefetch do poster também
     const img = new Image();
     img.src = "/vsl-poster.jpg";
-    return () => {
-      if (link.parentNode) link.parentNode.removeChild(link);
-    };
+    // Pré-importa o chunk da VSL em idle (sem bloquear)
+    const idle =
+      (window as any).requestIdleCallback ||
+      ((cb: () => void) => setTimeout(cb, 800));
+    idle(() => {
+      import("./VslScreen").catch(() => {});
+    });
   }, [step]);
 
   // ETAPA 1
@@ -173,7 +192,9 @@ export function ChatScreen() {
 
           {/* ETAPA VSL */}
           {step === "vsl" && (
-            <VslScreen onContinue={() => setStep(2)} />
+            <Suspense fallback={<LazyFallback />}>
+              <VslScreen onContinue={() => setStep(2)} />
+            </Suspense>
           )}
 
           {/* ETAPA 2 */}
@@ -315,14 +336,16 @@ export function ChatScreen() {
           {/* ETAPA 4 */}
           {step === 4 && (
             <>
-              <OrderBumpScreen
-                plan={selectedPlan}
-                onBack={() => setStep(3)}
-                onConfirm={(bump) => {
-                  setWithBump(bump);
-                  setStep(5);
-                }}
-              />
+              <Suspense fallback={<LazyFallback />}>
+                <OrderBumpScreen
+                  plan={selectedPlan}
+                  onBack={() => setStep(3)}
+                  onConfirm={(bump) => {
+                    setWithBump(bump);
+                    setStep(5);
+                  }}
+                />
+              </Suspense>
             </>
           )}
 
@@ -335,22 +358,26 @@ export function ChatScreen() {
               >
                 ← voltar
               </button>
-              <PixDirect
-                plan={selectedPlan}
-                withBump={withBump}
-                onPaid={() => setStep(6)}
-              />
+              <Suspense fallback={<LazyFallback />}>
+                <PixDirect
+                  plan={selectedPlan}
+                  withBump={withBump}
+                  onPaid={() => setStep(6)}
+                />
+              </Suspense>
             </>
           )}
 
           {/* ETAPA 6 — Sucesso */}
           {step === 6 && (
             <div className="pt-2">
-              <PaymentSuccess
-                telegramUrl={VIP_ACCESS_URL}
-                planTitle={selectedPlan.title}
-              />
-              <Testimonials />
+              <Suspense fallback={<LazyFallback />}>
+                <PaymentSuccess
+                  telegramUrl={VIP_ACCESS_URL}
+                  planTitle={selectedPlan.title}
+                />
+                <Testimonials />
+              </Suspense>
             </div>
           )}
         </div>
