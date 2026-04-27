@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          paid_at: string | null
+          payer_document: string | null
+          payer_email: string | null
+          payer_name: string | null
+          pix_copy_paste: string | null
+          pix_qr_code: string | null
+          plan_id: string
+          plan_title: string
+          raw_response: Json | null
+          raw_webhook: Json | null
+          status: string
+          updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          winnpay_transaction_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payer_document?: string | null
+          payer_email?: string | null
+          payer_name?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id: string
+          plan_title: string
+          raw_response?: Json | null
+          raw_webhook?: Json | null
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          winnpay_transaction_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          payer_document?: string | null
+          payer_email?: string | null
+          payer_name?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id?: string
+          plan_title?: string
+          raw_response?: Json | null
+          raw_webhook?: Json | null
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          winnpay_transaction_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
