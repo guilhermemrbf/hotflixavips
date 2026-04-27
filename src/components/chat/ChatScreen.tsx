@@ -99,7 +99,7 @@ export function ChatScreen() {
       <ChatHeader />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
-        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-3 sm:pt-5 pb-[max(6rem,env(safe-area-inset-bottom))]">
+        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-3 sm:pt-5 pb-[max(5rem,env(safe-area-inset-bottom))]">
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
@@ -155,7 +155,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(1)}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -233,7 +233,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(2)}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -307,7 +307,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(4)}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>

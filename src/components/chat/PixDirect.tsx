@@ -165,29 +165,29 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
 
   return (
     <div
-      className="space-y-4 px-1"
+      className="space-y-4 px-0.5"
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <div className="text-center">
         <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-3 py-1 rounded-full">
           Pix gerado · {pix.plan_title}
         </span>
-        <h2 className="text-xl font-extrabold text-foreground mt-3">
+        <h2 className="text-[20px] sm:text-xl font-extrabold text-foreground mt-3 leading-tight px-2">
           Falta <span className="text-gradient">1 passo</span> pra voce entrar
         </h2>
       </div>
 
-      <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/40 p-4 text-center">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-          Expira em
-        </p>
-        <p className="text-4xl font-bold text-gradient tabular-nums">
+      <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/40 px-4 py-3 flex items-center justify-center gap-3">
+        <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">
+          ⏳ Expira em
+        </span>
+        <span className="text-[28px] sm:text-3xl font-extrabold text-gradient tabular-nums leading-none">
           {mm}:{ss}
-        </p>
+        </span>
       </div>
 
       <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 text-center">
-        <div className="mx-auto h-40 w-40 sm:h-44 sm:w-44 rounded-xl bg-white p-2.5 sm:p-3 flex items-center justify-center overflow-hidden">
+        <div className="mx-auto h-44 w-44 sm:h-48 sm:w-48 rounded-xl bg-white p-2.5 sm:p-3 flex items-center justify-center overflow-hidden">
           {qrSrc ? (
             <img
               src={qrSrc}
@@ -197,7 +197,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
           ) : pix.pix_copy_paste ? (
             <QRCodeSVG
               value={pix.pix_copy_paste}
-              size={176}
+              size={184}
               level="M"
               className="h-full w-full"
             />
@@ -207,26 +207,30 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
             </p>
           )}
         </div>
-        <p className="text-sm sm:text-base text-foreground mt-3 font-medium">
-          {totalLabel} via Pix
+        <p className="text-[17px] sm:text-lg text-foreground mt-3 font-extrabold">
+          {totalLabel} <span className="text-muted-foreground font-medium text-sm">via Pix</span>
         </p>
-        <p className="text-xs text-muted-foreground">
-          Escaneie com o app do seu banco
+        <p className="text-[11px] text-muted-foreground mt-0.5">
+          Escaneie o QR ou use o código abaixo 👇
         </p>
       </div>
 
-      <p className="text-center text-[12px] text-online leading-snug px-2">
-        ✅ Acesso liberado automaticamente apos confirmacao do Pix. Voce recebe
-        o link direto aqui na tela.
-      </p>
-
+      {/* Ação principal no mobile: copiar código */}
       <button
         onClick={handleCopy}
         disabled={!pix.pix_copy_paste}
-        className="w-full rounded-xl bg-secondary border border-border px-4 py-3 text-sm font-medium text-foreground hover:border-primary/50 transition flex items-center justify-center gap-2 disabled:opacity-50"
+        className={`w-full rounded-2xl px-4 py-4 text-[15px] font-extrabold transition flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] ${
+          copied
+            ? "bg-online/20 border-2 border-online text-online"
+            : "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow"
+        }`}
       >
-        {copied ? "✓ Código copiado!" : "📋 Copiar código Pix"}
+        {copied ? "✓ CÓDIGO COPIADO — COLE NO APP DO BANCO" : "📋 COPIAR CÓDIGO PIX"}
       </button>
+
+      <p className="text-center text-[12px] text-online leading-snug px-2">
+        ✅ Liberação <strong>automática</strong> assim que o Pix cair. O link do grupo abre aqui mesmo.
+      </p>
 
       <div className="rounded-2xl bg-card/60 border border-border p-4 space-y-3">
         <p className="text-[11px] font-bold uppercase tracking-wider text-primary text-center">
