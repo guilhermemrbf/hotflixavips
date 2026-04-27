@@ -72,20 +72,15 @@ export const Route = createFileRoute("/api/create-pix")({
           const payerName = "Cliente VIP";
           const payerDocument = "19119119100";
 
-          const amount = totalCents / 100;
-          const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-          const webhookUrl = `${new URL(request.url).origin}/api/public/syncpay-webhook`;
-
-          // ⚡ OTIMIZAÇÃO 1: rodar insert do pedido E auth token em PARALELO.
-          // São operações independentes — não precisa esperar uma pra começar a outra.
-          const insertPromise = supabaseAdmin
+          // 1) Cria pedido pendente
+          const { data: order, error: insertErr } = await supabaseAdmin
             .from("orders")
             .insert({
               plan_id: bump ? `${plan_id}+bump` : plan_id,
               plan_title: fullTitle,
               amount_cents: totalCents,
               status: "pending",
-              expires_at: expiresAt,
+              expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
               utm_source: utmsClean.utm_source,
               utm_medium: utmsClean.utm_medium,
               utm_campaign: utmsClean.utm_campaign,
@@ -98,47 +93,54 @@ export const Route = createFileRoute("/api/create-pix")({
             .select()
             .single();
 
-          const authPromise = fetch(
-            "https://api.syncpayments.com.br/api/partner/v1/auth-token",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                client_id: syncClientId,
-                client_secret: syncClientSecret,
-              }),
-            },
-          )
-            .then(async (r) => ({ ok: r.ok, status: r.status, data: await r.json().catch(() => ({}) as any) }))
-            .catch((e) => ({ ok: false, status: 0, data: { network_error: String(e) } }));
-
-          const [insertResult, authResult] = await Promise.all([
-            insertPromise,
-            authPromise,
-          ]);
-
-          const { data: order, error: insertErr } = insertResult;
           if (insertErr || !order) {
             console.error("orders insert error", insertErr);
             return json(500, { error: "falha ao criar pedido" });
           }
 
-          const token: string | undefined = authResult.data?.access_token;
-          if (!authResult.ok || !token) {
-            console.error("[create-pix] SyncPay auth falhou", authResult.data);
-            // fire-and-forget: marca como failed sem bloquear a resposta
-            void supabaseAdmin
-              .from("orders")
-              .update({ status: "failed", raw_response: authResult.data })
-              .eq("id", order.id);
+          // 2) Chama SyncPay
+          const amount = totalCents / 100;
+          // Webhook URL estável: sempre aponta pra nossa rota pública
+          // (origin funciona em preview e produção; SUPABASE_URL às vezes
+          // não chega ao Worker)
+          const webhookUrl = `${new URL(request.url).origin}/api/public/syncpay-webhook`;
+
+          // Auth token
+          let token: string | undefined;
+          try {
+            const authRes = await fetch(
+              "https://api.syncpayments.com.br/api/partner/v1/auth-token",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  client_id: syncClientId,
+                  client_secret: syncClientSecret,
+                }),
+              },
+            );
+            const authData = await authRes.json().catch(() => ({}) as any);
+            token = authData.access_token;
+            if (!authRes.ok || !token) {
+              console.error("[create-pix] SyncPay auth falhou", authData);
+              await supabaseAdmin
+                .from("orders")
+                .update({ status: "failed", raw_response: authData })
+                .eq("id", order.id);
+              return json(200, {
+                error: "syncpay_auth falhou",
+                status: authRes.status,
+                details: authData,
+              });
+            }
+          } catch (netErr) {
+            console.error("[create-pix] erro rede SyncPay auth", netErr);
             return json(200, {
-              error: "syncpay_auth falhou",
-              status: authResult.status,
-              details: authResult.data,
+              error: "SYNCPAY_NETWORK_ERROR",
+              details: String(netErr),
             });
           }
 
-          // 2) Cash-in (depende do token, não dá pra paralelizar)
           let spRes: Response;
           try {
             spRes = await fetch(
@@ -165,7 +167,7 @@ export const Route = createFileRoute("/api/create-pix")({
             );
           } catch (netErr) {
             console.error("[create-pix] erro rede SyncPay cash-in", netErr);
-            void supabaseAdmin
+            await supabaseAdmin
               .from("orders")
               .update({
                 status: "failed",
@@ -182,7 +184,7 @@ export const Route = createFileRoute("/api/create-pix")({
 
           if (!spRes.ok || !spData?.identifier) {
             console.error("[create-pix] SyncPay falhou", spData);
-            void supabaseAdmin
+            await supabaseAdmin
               .from("orders")
               .update({ status: "failed", raw_response: spData })
               .eq("id", order.id);
@@ -197,10 +199,7 @@ export const Route = createFileRoute("/api/create-pix")({
           const qrBase64: string | undefined = undefined; // SyncPay não retorna imagem
           const txId = String(spData.identifier ?? "");
 
-          // ⚡ OTIMIZAÇÃO 2: update do pedido + notificação Utmify em BACKGROUND.
-          // O cliente já tem o código Pix — não precisa esperar essas gravações
-          // pra pintar o QR na tela. Economiza ~200-800ms na resposta.
-          void supabaseAdmin
+          await supabaseAdmin
             .from("orders")
             .update({
               winnpay_transaction_id: txId,
@@ -208,12 +207,10 @@ export const Route = createFileRoute("/api/create-pix")({
               pix_copy_paste: qrCopyPaste,
               raw_response: spData,
             })
-            .eq("id", order.id)
-            .then(({ error }) => {
-              if (error) console.error("[create-pix] update bg error", error);
-            });
+            .eq("id", order.id);
 
-          void sendOrderToUtmify({
+          // Notifica Utmify — pedido aguardando pagamento
+          await sendOrderToUtmify({
             orderId: order.id,
             planTitle: fullTitle,
             amountCents: totalCents,
@@ -228,7 +225,7 @@ export const Route = createFileRoute("/api/create-pix")({
             utm_campaign: utmsClean.utm_campaign,
             utm_term: utmsClean.utm_term,
             utm_content: utmsClean.utm_content,
-          }).catch((e) => console.error("[create-pix] utmify bg error", e));
+          });
 
           return json(200, {
             order_id: order.id,
@@ -236,7 +233,7 @@ export const Route = createFileRoute("/api/create-pix")({
             plan_title: fullTitle,
             pix_qr_code: qrBase64,
             pix_copy_paste: qrCopyPaste,
-            expires_at: expiresAt,
+            expires_at: order.expires_at,
           });
         } catch (e) {
           console.error("[create-pix] erro inesperado", e);
