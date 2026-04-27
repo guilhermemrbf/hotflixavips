@@ -291,7 +291,7 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
             {[
               "Toca no botão acima",
               "Abre o Telegram e clica em ENTRAR no canal",
-              "Pronto — todo conteúdo VIP liberado 🔥",
+              "Pronto — 🔥 Club Proibido - Hotflix liberado",
             ].map((s, i) => (
               <li key={i} className="flex items-start gap-3 text-sm text-foreground/90">
                 <span className="flex-shrink-0 mt-0.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
