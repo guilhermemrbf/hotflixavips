@@ -14,14 +14,30 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
   const [watched, setWatched] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [ready, setReady] = useState(false);
 
   // Autoplay muted assim que a tela carrega
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
-    const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => {});
+    // Tenta dar play imediatamente e também em qualquer evento de
+    // loaded — garante start o mais cedo possível em qualquer rede.
+    const tryPlay = () => {
+      const p = v.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    };
+    tryPlay();
+    const onCanPlay = () => {
+      setReady(true);
+      tryPlay();
+    };
+    v.addEventListener("loadeddata", onCanPlay);
+    v.addEventListener("canplay", onCanPlay);
+    return () => {
+      v.removeEventListener("loadeddata", onCanPlay);
+      v.removeEventListener("canplay", onCanPlay);
+    };
   }, []);
 
   // Contador de tempo assistido — libera CTA após 5s
@@ -74,11 +90,19 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               muted
               playsInline
               preload="auto"
+              poster="/vsl-poster.jpg"
               className="absolute inset-0 h-full w-full object-cover"
               controls={false}
               controlsList="nodownload noplaybackrate nofullscreen"
               disablePictureInPicture
             />
+
+            {/* Spinner leve só enquanto o vídeo não tá pronto */}
+            {!ready && (
+              <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none">
+                <div className="h-10 w-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+              </div>
+            )}
 
             {/* Tag AO VIVO */}
             <div className="absolute top-3 left-3 z-10">
