@@ -25,7 +25,7 @@ export function PixDirect({ plan, onPaid }: Props) {
   const [seconds, setSeconds] = useState(599);
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(false);
-  const [bump, setBump] = useState(false);
+  const bump = false;
 
   // 1) Gerar Pix (re-gera se trocar o bump)
   useEffect(() => {
@@ -40,7 +40,7 @@ export function PixDirect({ plan, onPaid }: Props) {
         const res = await fetch("/api/create-pix", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ plan_id: plan.id, utms, bump }),
+        body: JSON.stringify({ plan_id: plan.id, utms, bump }),
         });
         const data = await res.json();
         if (cancelled) return;
@@ -164,8 +164,7 @@ export function PixDirect({ plan, onPaid }: Props) {
           Pix gerado · {pix.plan_title}
         </span>
         <h2 className="text-xl font-extrabold text-foreground mt-3">
-          Falta <span className="text-gradient">1 passo</span> pra entrar comigo
-          😘
+          Falta <span className="text-gradient">1 passo</span> pra voce entrar
         </h2>
       </div>
 
@@ -177,55 +176,6 @@ export function PixDirect({ plan, onPaid }: Props) {
           {mm}:{ss}
         </p>
       </div>
-
-      {/* Order Bump */}
-      <button
-        type="button"
-        onClick={() => setBump((v) => !v)}
-        className={`w-full text-left rounded-2xl border-2 p-4 transition-all relative overflow-hidden active:scale-[0.99] ${
-          bump
-            ? "border-primary bg-gradient-to-br from-primary/20 via-card to-card neon-glow"
-            : "border-dashed border-primary/50 bg-card/60 hover:border-primary"
-        }`}
-      >
-        <div className="absolute -top-px left-3 text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-b-lg shadow-lg">
-          🎁 BÔNUS EXCLUSIVO
-        </div>
-        <div className="flex items-start gap-3 mt-3">
-          <div
-            className={`shrink-0 mt-0.5 h-6 w-6 rounded-md border-2 flex items-center justify-center transition ${
-              bump
-                ? "bg-primary border-primary text-primary-foreground"
-                : "border-muted-foreground/40 bg-transparent"
-            }`}
-          >
-            {bump && (
-              <svg
-                viewBox="0 0 24 24"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              >
-                <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-extrabold text-foreground leading-tight">
-              🎁 𝗩𝗢𝗖𝗘 𝗚𝗔𝗡𝗛𝗢𝗨 𝗕𝗢𝗡𝗨𝗦 🔥
-            </p>
-            <p className="text-[12px] text-muted-foreground mt-1 leading-snug">
-              ⚠️ Se você já chegou até aqui… sabe exatamente o que quer. Adicione o pacote bônus secreto pra liberar tudo de uma vez 😈
-            </p>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-xs text-muted-foreground line-through">R$ 19,90</span>
-              <span className="text-lg font-extrabold text-gradient">+ R$ 3,90</span>
-              <span className="text-[10px] uppercase font-bold text-primary tracking-wider">só hoje</span>
-            </div>
-          </div>
-        </div>
-      </button>
 
       <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 text-center">
         <div className="mx-auto h-40 w-40 sm:h-44 sm:w-44 rounded-xl bg-white p-2.5 sm:p-3 flex items-center justify-center overflow-hidden">
@@ -255,6 +205,11 @@ export function PixDirect({ plan, onPaid }: Props) {
           Escaneie com o app do seu banco
         </p>
       </div>
+
+      <p className="text-center text-[12px] text-online leading-snug px-2">
+        ✅ Acesso liberado automaticamente apos confirmacao do Pix. Voce recebe
+        o link direto aqui na tela.
+      </p>
 
       <button
         onClick={handleCopy}
