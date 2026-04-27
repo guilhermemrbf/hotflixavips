@@ -115,15 +115,15 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
       </div>
 
       {/* Card */}
-      <div className="rounded-3xl border border-primary/40 bg-gradient-to-b from-card via-card to-background/60 p-6 sm:p-8 shadow-soft neon-glow">
+      <div className="rounded-3xl border border-primary/40 bg-gradient-to-b from-card via-card to-background/60 p-5 sm:p-8 shadow-soft neon-glow">
         {/* Success seal */}
         <div className="flex flex-col items-center text-center">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-online/30 blur-2xl animate-pulse-glow" />
-            <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-online to-primary-glow flex items-center justify-center neon-glow">
+            <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-online to-primary-glow flex items-center justify-center neon-glow">
               <svg
                 viewBox="0 0 24 24"
-                className="h-12 w-12 text-primary-foreground"
+                className="h-10 w-10 sm:h-12 sm:w-12 text-primary-foreground"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="3"
@@ -142,15 +142,15 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
             </div>
           </div>
 
-          <span className="mt-5 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] bg-online/15 text-online px-3 py-1.5 rounded-full">
+          <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] bg-online/15 text-online px-3 py-1.5 rounded-full">
             <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse" />
             Pagamento aprovado
           </span>
 
-          <h1 className="mt-4 text-[26px] sm:text-[30px] leading-tight font-extrabold text-foreground">
+          <h1 className="mt-3 text-[24px] sm:text-[30px] leading-[1.1] font-extrabold text-foreground">
             🎉 <span className="text-gradient">Voce esta dentro!</span>
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground max-w-xs">
+          <p className="mt-2 text-[13px] sm:text-sm text-muted-foreground max-w-xs leading-snug">
             Seu acesso foi liberado.{" "}
             <strong className="text-foreground">
               Clica no botao abaixo pra entrar.
@@ -158,9 +158,9 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
           </p>
 
           {planTitle && (
-            <div className="mt-4 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/60 px-3 py-1.5 rounded-full">
+            <div className="mt-3 inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/60 px-3 py-1.5 rounded-full max-w-full">
               <span>Plano:</span>
-              <span className="text-foreground">{planTitle}</span>
+              <span className="text-foreground truncate">{planTitle}</span>
             </div>
           )}
         </div>
@@ -168,7 +168,7 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
         {/* Telegram CTA */}
         <button
           onClick={handleOpen}
-          className="group relative mt-7 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#229ED9] via-[#2AABEE] to-[#229ED9] px-5 py-4 text-white font-extrabold text-base shadow-soft transition active:scale-[0.98]"
+          className="group relative mt-6 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#229ED9] via-[#2AABEE] to-[#229ED9] px-5 py-4 text-white font-extrabold text-[15px] sm:text-base shadow-soft transition active:scale-[0.98]"
           style={{
             boxShadow:
               "0 0 0 1px rgba(255,255,255,0.08) inset, 0 12px 30px -8px rgba(34,158,217,0.55)",
