@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CtaButton } from "./CtaButton";
 import type { Plan } from "./PlanCard";
 import { captureUtms } from "@/lib/utms";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   plan: Plan;
@@ -233,6 +234,13 @@ export function PixDirect({ plan, onPaid }: Props) {
               src={qrSrc}
               alt="QR Code Pix"
               className="h-full w-full object-contain"
+            />
+          ) : pix.pix_copy_paste ? (
+            <QRCodeSVG
+              value={pix.pix_copy_paste}
+              size={176}
+              level="M"
+              className="h-full w-full"
             />
           ) : (
             <p className="text-xs text-black">
