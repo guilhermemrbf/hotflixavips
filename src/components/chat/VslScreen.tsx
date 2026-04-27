@@ -13,30 +13,63 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [watched, setWatched] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [ready, setReady] = useState(false);
 
-  // Autoplay muted assim que a tela carrega
+  // Autoplay COM som por padrão — se o browser bloquear, cai pra mudo
+  // e destrava no primeiro toque do usuário na página.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = true;
-    // Tenta dar play imediatamente e também em qualquer evento de
-    // loaded — garante start o mais cedo possível em qualquer rede.
-    const tryPlay = () => {
-      const p = v.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
+    v.muted = false;
+    v.volume = 1;
+
+    const tryPlayWithSound = async () => {
+      try {
+        v.muted = false;
+        await v.play();
+        setMuted(false);
+      } catch {
+        // Browser bloqueou — cai pra mudo pra não travar o fluxo
+        v.muted = true;
+        setMuted(true);
+        try {
+          await v.play();
+        } catch {
+          /* ignore */
+        }
+      }
     };
-    tryPlay();
+
+    tryPlayWithSound();
+
     const onCanPlay = () => {
       setReady(true);
-      tryPlay();
+      if (v.paused) tryPlayWithSound();
     };
     v.addEventListener("loadeddata", onCanPlay);
     v.addEventListener("canplay", onCanPlay);
+
+    // Fallback: no primeiro toque/clique na página, liga o som
+    const unlockAudio = () => {
+      if (!v) return;
+      if (v.muted) {
+        v.muted = false;
+        setMuted(false);
+        const p = v.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      }
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("click", unlockAudio);
+    };
+    document.addEventListener("touchstart", unlockAudio, { once: true });
+    document.addEventListener("click", unlockAudio, { once: true });
+
     return () => {
       v.removeEventListener("loadeddata", onCanPlay);
       v.removeEventListener("canplay", onCanPlay);
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("click", unlockAudio);
     };
   }, []);
 
@@ -87,7 +120,6 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               ref={videoRef}
               src={videoSrc}
               autoPlay
-              muted
               playsInline
               preload="auto"
               poster="/vsl-poster.jpg"
