@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 import confetti from "canvas-confetti";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -372,7 +372,7 @@ function VipPage() {
             <div className="mx-auto mt-6 inline-block rounded-2xl p-[2px]"
               style={{ background: "linear-gradient(135deg,#FF2D78,#9B30FF)" }}>
               <div className="rounded-2xl bg-white p-4">
-                <QRCode value={pixCode} size={240} level="M" includeMargin={false} />
+                <QRCodeSVG value={pixCode} size={240} level="M" includeMargin={false} />
               </div>
             </div>
 
