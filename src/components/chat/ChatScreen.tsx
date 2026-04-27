@@ -57,6 +57,24 @@ export function ChatScreen() {
   const [stage3, setStage3] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Preload da VSL assim que o usuário está na tela 1
+  // — começa a baixar em background enquanto lê o chat.
+  useEffect(() => {
+    if (step !== 1) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "video";
+    link.href = "/vsl.mp4";
+    link.setAttribute("fetchpriority", "high");
+    document.head.appendChild(link);
+    // Prefetch do poster também
+    const img = new Image();
+    img.src = "/vsl-poster.jpg";
+    return () => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    };
+  }, [step]);
+
   // ETAPA 1
   useEffect(() => {
     if (step !== 1) return;
