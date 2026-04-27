@@ -209,21 +209,52 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
               <strong className="text-primary">R$ 3,90</strong>. Nao vai
               aparecer de novo depois que voce sair.
             </p>
-            <button
-              onClick={handleUpsellBuy}
-              disabled={upsellLoading}
-              className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
-            >
-              {upsellLoading
-                ? "Gerando Pix do bonus…"
-                : "QUERO O BONUS — R$ 3,90 SO AGORA"}
-            </button>
-            <button
-              onClick={() => setUpsellDismissed(true)}
-              className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
-            >
-              Nao, vou entrar sem o bonus
-            </button>
+
+            {!bumpPix ? (
+              <>
+                <button
+                  onClick={handleUpsellBuy}
+                  disabled={upsellLoading}
+                  className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
+                >
+                  {upsellLoading
+                    ? "Gerando Pix do bonus…"
+                    : "QUERO O BONUS — R$ 3,90 SO AGORA"}
+                </button>
+                {bumpError && (
+                  <p className="mt-2 text-[11px] text-destructive text-center">
+                    {bumpError}
+                  </p>
+                )}
+                <button
+                  onClick={handleDismissUpsell}
+                  className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+                >
+                  Nao, vou entrar sem o bonus
+                </button>
+              </>
+            ) : (
+              <div className="mt-4 flex flex-col items-center gap-3">
+                <p className="text-[12px] text-foreground text-center font-semibold">
+                  Pague R$ 3,90 via Pix pra liberar o Pack Secreto:
+                </p>
+                <div className="bg-white p-3 rounded-xl">
+                  <QRCodeSVG value={bumpPix} size={160} />
+                </div>
+                <button
+                  onClick={handleBumpCopy}
+                  className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft active:scale-[0.98] transition"
+                >
+                  {bumpCopied ? "✅ Codigo copiado" : "Copiar codigo Pix"}
+                </button>
+                <button
+                  onClick={handleDismissUpsell}
+                  className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+                >
+                  Ja paguei — entrar no canal
+                </button>
+              </div>
+            )}
           </div>
         )}
 
