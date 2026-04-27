@@ -16,14 +16,8 @@ export function ChatHeader() {
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-semibold text-foreground tracking-tight flex items-center gap-1.5 text-[15px] sm:text-base">
-            Letícia <span className="text-primary">VIP</span>
-            <svg
-              className="h-4 w-4 text-primary"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 2l2.4 4.8 5.3.8-3.8 3.7.9 5.3-4.8-2.5-4.8 2.5.9-5.3L4.3 7.6l5.3-.8L12 2z" />
-            </svg>
+            Letícia <span className="text-muted-foreground font-normal">•</span>{" "}
+            <span className="text-primary">Hotflix</span>
           </h1>
           <p className="text-xs text-online flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-online" />
