@@ -195,6 +195,18 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </span>
       </div>
 
+      {/* Depoimento simulado estilo print de chat */}
+      <div className="flex justify-end">
+        <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-online/15 border border-online/40 px-3.5 py-2.5 shadow-soft">
+          <p className="text-[13px] text-foreground leading-snug">
+            Caiu na hora, já tô dentro 🔥
+          </p>
+          <p className="text-[10px] text-muted-foreground mt-1 text-right">
+            — Carlos M. · agora
+          </p>
+        </div>
+      </div>
+
       <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 text-center">
         <div className="mx-auto h-44 w-44 sm:h-48 sm:w-48 rounded-xl bg-white p-2.5 sm:p-3 flex items-center justify-center overflow-hidden">
           {qrSrc ? (
@@ -308,9 +320,15 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </span>
       </button>
 
-      <p className="text-center text-[12px] text-online leading-snug px-2">
-        ✅ Liberação <strong>automática</strong> assim que o Pix cair. O link do grupo abre aqui mesmo.
-      </p>
+      <div className="rounded-2xl bg-online/15 border-2 border-online/50 p-4 flex items-start gap-3">
+        <span className="shrink-0 h-8 w-8 rounded-full bg-online/30 border border-online flex items-center justify-center text-online text-lg font-bold">
+          ✓
+        </span>
+        <p className="text-[14px] sm:text-[15px] text-foreground font-semibold leading-snug">
+          Liberação <span className="text-online">automática</span> assim que o Pix cair.{" "}
+          <span className="text-muted-foreground font-medium">O link do grupo abre aqui mesmo.</span>
+        </p>
+      </div>
 
       <div className="rounded-2xl bg-amber-500/10 border border-amber-500/40 p-4 space-y-2">
         <div className="flex items-start gap-2">
