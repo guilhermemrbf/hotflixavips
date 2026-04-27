@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CtaButton } from "./CtaButton";
 import type { Plan } from "./PlanCard";
 import { captureUtms } from "@/lib/utms";
@@ -26,9 +26,14 @@ export function PixDirect({ plan, onPaid }: Props) {
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(false);
   const bump = false;
+  // Guard contra double-invoke do StrictMode / re-render
+  const createdForPlanRef = useRef<string | null>(null);
 
   // 1) Gerar Pix (re-gera se trocar o bump)
   useEffect(() => {
+    const key = `${plan.id}:${bump}`;
+    if (createdForPlanRef.current === key) return;
+    createdForPlanRef.current = key;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -47,6 +52,8 @@ export function PixDirect({ plan, onPaid }: Props) {
         if (!res.ok || data.error) {
           console.error("create-pix error", data);
           setError("Falha ao gerar Pix. Tenta de novo em instantes.");
+          // permite retry manual mudando o ref
+          createdForPlanRef.current = null;
         } else {
           setPix(data as PixData);
         }
@@ -54,6 +61,7 @@ export function PixDirect({ plan, onPaid }: Props) {
         if (!cancelled) {
           console.error(e);
           setError("Falha ao gerar Pix. Tenta de novo em instantes.");
+          createdForPlanRef.current = null;
         }
       } finally {
         if (!cancelled) setLoading(false);
