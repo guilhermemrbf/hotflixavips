@@ -57,12 +57,40 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
           Ultima chance · expira em <span className="tabular-nums">{mm}:{ss}</span>
         </span>
         <h2 className="text-[21px] sm:text-[24px] leading-[1.15] font-extrabold text-foreground px-1">
-          Espera amor...{" "}
-          <span className="text-gradient">tenho algo so pra voce</span> 😈
+          Espera...{" "}
+          <span className="text-gradient">separei algo especial só pra você</span> 😈
         </h2>
         <p className="text-[13px] text-muted-foreground mt-2 leading-snug">
           Libero isso <strong className="text-foreground">uma unica vez</strong>. Se sair, nao volta.
         </p>
+      </div>
+
+      {/* Prévia bloqueada do pack */}
+      <div className="relative rounded-3xl overflow-hidden border-2 border-primary/40 aspect-[16/10] bg-gradient-to-br from-primary/20 via-black to-black">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 30% 40%, rgba(139,92,246,0.35), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.3), transparent 55%)",
+            filter: "blur(32px)",
+          }}
+        />
+        <div className="absolute inset-0 backdrop-blur-2xl bg-black/40" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4">
+          <div className="h-14 w-14 rounded-full bg-black/60 border border-primary/60 flex items-center justify-center neon-glow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-7 w-7 text-primary">
+              <rect x="4" y="10" width="16" height="11" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M8 10V7a4 4 0 018 0v3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">
+            Conteúdo bloqueado
+          </p>
+          <p className="text-[12px] text-muted-foreground">
+            Desbloqueie abaixo pra ver tudo 👇
+          </p>
+        </div>
       </div>
 
       {/* Order Bump Card - Principal */}
