@@ -1,0 +1,1 @@
+UPDATE public.orders SET status='paid', paid_at=now() WHERE id='919ec3ab-fdff-47ca-a313-3a2d9b0b4741' AND status='pending';

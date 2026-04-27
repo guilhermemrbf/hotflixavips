@@ -72,7 +72,10 @@ export const Route = createFileRoute("/api/public/syncpay-webhook")({
             normalized === "completed" ||
             normalized === "paid" ||
             normalized === "approved" ||
-            normalized === "success";
+            normalized === "success" ||
+            normalized === "paid_out" ||
+            normalized === "paidout" ||
+            normalized === "settled";
           const isFailed =
             normalized === "failed" ||
             normalized === "canceled" ||
