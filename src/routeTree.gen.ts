@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VipRouteImport } from './routes/vip'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiCreatePixRouteImport } from './routes/api/create-pix'
 import { Route as ApiCheckPaymentRouteImport } from './routes/api/check-payment'
 import { Route as ApiPublicUtmifyTestRouteImport } from './routes/api/public/utmify-test'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
+const VipRoute = VipRouteImport.update({
+  id: '/vip',
+  path: '/vip',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/vip': typeof VipRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/vip': typeof VipRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/vip': typeof VipRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/vip'
     | '/api/check-payment'
     | '/api/create-pix'
     | '/api/public/mp-webhook'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/vip'
     | '/api/check-payment'
     | '/api/create-pix'
     | '/api/public/mp-webhook'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/vip'
     | '/api/check-payment'
     | '/api/create-pix'
     | '/api/public/mp-webhook'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  VipRoute: typeof VipRoute
   ApiCheckPaymentRoute: typeof ApiCheckPaymentRoute
   ApiCreatePixRoute: typeof ApiCreatePixRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
@@ -97,6 +110,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vip': {
+      id: '/vip'
+      path: '/vip'
+      fullPath: '/vip'
+      preLoaderRoute: typeof VipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -137,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  VipRoute: VipRoute,
   ApiCheckPaymentRoute: ApiCheckPaymentRoute,
   ApiCreatePixRoute: ApiCreatePixRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
@@ -145,3 +166,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
