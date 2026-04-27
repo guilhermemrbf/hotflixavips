@@ -46,9 +46,10 @@ export const Route = createFileRoute("/api/create-pix")({
             return json(400, { error: "plano inválido" });
           }
 
-          const accessToken = process.env.MP_ACCESS_TOKEN;
-          if (!accessToken) {
-            return json(500, { error: "MP_ACCESS_TOKEN ausente" });
+          const syncClientId = process.env.SYNCPAY_CLIENT_ID;
+          const syncClientSecret = process.env.SYNCPAY_CLIENT_SECRET;
+          if (!syncClientId || !syncClientSecret) {
+            return json(500, { error: "SYNCPAY credentials ausentes" });
           }
 
           const utmsClean = {
@@ -96,43 +97,75 @@ export const Route = createFileRoute("/api/create-pix")({
             return json(500, { error: "falha ao criar pedido" });
           }
 
-          // 2) Chama Mercado Pago
+          // 2) Chama SyncPay
           const amount = totalCents / 100;
           const supaUrl = process.env.SUPABASE_URL;
-          const notification_url = supaUrl
-            ? `${supaUrl}/functions/v1/mp-webhook`
-            : `${new URL(request.url).origin}/api/public/mp-webhook`;
+          const webhookUrl = supaUrl
+            ? `${supaUrl}/functions/v1/webhook-syncpay`
+            : `${new URL(request.url).origin}/api/public/syncpay-webhook`;
 
-          const mpPayload = {
-            transaction_amount: amount,
-            description: fullTitle,
-            payment_method_id: "pix",
-            external_reference: order.id,
-            notification_url,
-            date_of_expiration: new Date(Date.now() + 10 * 60 * 1000)
-              .toISOString()
-              .replace("Z", "-00:00"),
-            payer: {
-              email: payerEmail,
-              first_name: "Cliente",
-              last_name: "VIP",
-              identification: { type: "CPF", number: payerDocument },
-            },
-          };
-
-          let mpRes: Response;
+          // Auth token
+          let token: string | undefined;
           try {
-            mpRes = await fetch("https://api.mercadopago.com/v1/payments", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-                "X-Idempotency-Key": order.id,
+            const authRes = await fetch(
+              "https://app.syncpayments.com.br/api/partner/v1/auth-token",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  client_id: syncClientId,
+                  client_secret: syncClientSecret,
+                }),
               },
-              body: JSON.stringify(mpPayload),
-            });
+            );
+            const authData = await authRes.json().catch(() => ({}) as any);
+            token = authData.access_token;
+            if (!authRes.ok || !token) {
+              console.error("[create-pix] SyncPay auth falhou", authData);
+              await supabaseAdmin
+                .from("orders")
+                .update({ status: "failed", raw_response: authData })
+                .eq("id", order.id);
+              return json(200, {
+                error: "syncpay_auth falhou",
+                status: authRes.status,
+                details: authData,
+              });
+            }
           } catch (netErr) {
-            console.error("[create-pix] erro de rede MP", netErr);
+            console.error("[create-pix] erro rede SyncPay auth", netErr);
+            return json(200, {
+              error: "SYNCPAY_NETWORK_ERROR",
+              details: String(netErr),
+            });
+          }
+
+          let spRes: Response;
+          try {
+            spRes = await fetch(
+              "https://app.syncpayments.com.br/api/partner/v1/cash-in",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+                body: JSON.stringify({
+                  amount,
+                  description: fullTitle,
+                  webhook_url: webhookUrl,
+                  client: {
+                    name: payerName,
+                    email: payerEmail,
+                    cpf: payerDocument,
+                    phone: "11999999999",
+                  },
+                }),
+              },
+            );
+          } catch (netErr) {
+            console.error("[create-pix] erro rede SyncPay cash-in", netErr);
             await supabaseAdmin
               .from("orders")
               .update({
@@ -141,30 +174,29 @@ export const Route = createFileRoute("/api/create-pix")({
               })
               .eq("id", order.id);
             return json(200, {
-              error: "MP_NETWORK_ERROR",
+              error: "SYNCPAY_NETWORK_ERROR",
               details: String(netErr),
             });
           }
 
-          const mpData = await mpRes.json().catch(() => ({}) as any);
+          const spData = await spRes.json().catch(() => ({}) as any);
 
-          if (!mpRes.ok) {
-            console.error("[create-pix] MP falhou", mpData);
+          if (!spRes.ok || !spData?.identifier) {
+            console.error("[create-pix] SyncPay falhou", spData);
             await supabaseAdmin
               .from("orders")
-              .update({ status: "failed", raw_response: mpData })
+              .update({ status: "failed", raw_response: spData })
               .eq("id", order.id);
             return json(200, {
-              error: "mercado_pago falhou",
-              status: mpRes.status,
-              details: mpData,
+              error: "syncpay falhou",
+              status: spRes.status,
+              details: spData,
             });
           }
 
-          const txData = mpData.point_of_interaction?.transaction_data;
-          const qrBase64 = txData?.qr_code_base64;
-          const qrCopyPaste = txData?.qr_code;
-          const txId = String(mpData.id ?? "");
+          const qrCopyPaste: string | undefined = spData.pix_code;
+          const qrBase64: string | undefined = undefined; // SyncPay não retorna imagem
+          const txId = String(spData.identifier ?? "");
 
           await supabaseAdmin
             .from("orders")
@@ -172,7 +204,7 @@ export const Route = createFileRoute("/api/create-pix")({
               winnpay_transaction_id: txId,
               pix_qr_code: qrBase64,
               pix_copy_paste: qrCopyPaste,
-              raw_response: mpData,
+              raw_response: spData,
             })
             .eq("id", order.id);
 

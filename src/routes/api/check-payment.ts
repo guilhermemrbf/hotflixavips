@@ -35,30 +35,50 @@ export const Route = createFileRoute("/api/check-payment")({
             return json(200, { status: "not_found", paid_at: null });
           }
 
-          // Fallback: confirma direto na MP se ainda pendente
+          // Fallback: confere status direto no SyncPay se ainda pendente
           if (order.status === "pending" && order.winnpay_transaction_id) {
-            const accessToken = process.env.MP_ACCESS_TOKEN;
-            if (accessToken) {
+            const clientId = process.env.SYNCPAY_CLIENT_ID;
+            const clientSecret = process.env.SYNCPAY_CLIENT_SECRET;
+            if (clientId && clientSecret) {
               try {
-                const mpRes = await fetch(
-                  `https://api.mercadopago.com/v1/payments/${order.winnpay_transaction_id}`,
-                  { headers: { Authorization: `Bearer ${accessToken}` } }
+                const authRes = await fetch(
+                  "https://app.syncpayments.com.br/api/partner/v1/auth-token",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      client_id: clientId,
+                      client_secret: clientSecret,
+                    }),
+                  },
                 );
-                const payment = await mpRes.json();
-                if (mpRes.ok && payment.status === "approved") {
-                  const paidAt = new Date().toISOString();
-                  await supabaseAdmin
-                    .from("orders")
-                    .update({
-                      status: "paid",
-                      paid_at: paidAt,
-                      raw_webhook: payment,
-                    })
-                    .eq("id", order_id);
-                  return json(200, { status: "paid", paid_at: paidAt });
+                const authData = await authRes.json().catch(() => ({}) as any);
+                const token = authData.access_token;
+                if (token) {
+                  const spRes = await fetch(
+                    `https://app.syncpayments.com.br/api/partner/v1/cash-in/${order.winnpay_transaction_id}`,
+                    { headers: { Authorization: `Bearer ${token}` } },
+                  );
+                  const payment = await spRes.json().catch(() => ({}) as any);
+                  const spStatus = payment?.status ?? payment?.data?.status;
+                  if (
+                    spRes.ok &&
+                    (spStatus === "completed" || spStatus === "paid")
+                  ) {
+                    const paidAt = new Date().toISOString();
+                    await supabaseAdmin
+                      .from("orders")
+                      .update({
+                        status: "paid",
+                        paid_at: paidAt,
+                        raw_webhook: payment,
+                      })
+                      .eq("id", order_id);
+                    return json(200, { status: "paid", paid_at: paidAt });
+                  }
                 }
               } catch (e) {
-                console.error("[check-payment] erro consulta MP", e);
+                console.error("[check-payment] erro consulta SyncPay", e);
               }
             }
           }

@@ -26,6 +26,16 @@ serve(async (req) => {
         .from("pagamentos")
         .update({ status: "pago" })
         .eq("transacao_id", transacaoId);
+
+      // Também atualiza o fluxo antigo (orders) se houver pedido vinculado
+      await supabase
+        .from("orders")
+        .update({
+          status: "paid",
+          paid_at: new Date().toISOString(),
+          raw_webhook: body,
+        })
+        .eq("winnpay_transaction_id", transacaoId);
     }
 
     return new Response("ok", { status: 200 });
