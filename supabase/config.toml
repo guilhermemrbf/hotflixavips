@@ -1,1 +1,7 @@
 project_id = "dhpjnitteipbzwljgqwr"
+
+[functions.criar-pix]
+verify_jwt = false
+
+[functions.webhook-syncpay]
+verify_jwt = false
