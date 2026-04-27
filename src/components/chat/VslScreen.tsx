@@ -50,25 +50,23 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
 
   return (
     <div
-      className="flex-1 flex flex-col min-h-0"
+      className="pt-1"
       style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
     >
+      <div className="text-center mb-3">
+        <span className="text-[11px] text-muted-foreground bg-secondary/60 px-3 py-1 rounded-full">
+          agora
+        </span>
+      </div>
+
       <Bubble delay={0}>
         Antes de te mostrar... preciso te falar uma coisa
       </Bubble>
 
       {/* Player 9:16 */}
-      <div className="mt-2 flex-1 min-h-0 flex items-center justify-center">
-        <div
-          className="relative rounded-[1.25rem] overflow-hidden border-2 border-primary/40 bg-black neon-glow"
-          style={{
-            aspectRatio: "9 / 16",
-            height: "100%",
-            maxHeight: "100%",
-            width: "auto",
-            maxWidth: "100%",
-          }}
-        >
+      <div className="mt-4 flex justify-center">
+        <div className="w-full max-w-[320px] sm:max-w-[360px] mx-auto">
+          <div className="relative w-full aspect-[9/16] rounded-[1.5rem] overflow-hidden border-2 border-primary/40 bg-black neon-glow">
             <video
               ref={videoRef}
               src={videoSrc}
@@ -83,10 +81,10 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
             />
 
             {/* Tag AO VIVO */}
-            <div className="absolute top-2.5 left-2.5 z-10">
-              <span className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest bg-black/60 backdrop-blur text-white px-2 py-0.5 rounded-full border border-white/10">
+            <div className="absolute top-3 left-3 z-10">
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-black/60 backdrop-blur text-white px-2.5 py-1 rounded-full border border-white/10">
                 <span className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />
-                pra você
+                mensagem pra você
               </span>
             </div>
 
@@ -95,7 +93,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               type="button"
               onClick={toggleMute}
               aria-label={muted ? "Ativar som" : "Silenciar"}
-              className="absolute top-2.5 right-2.5 z-10 h-8 w-8 rounded-full bg-black/60 backdrop-blur border border-white/15 text-white flex items-center justify-center active:scale-95 transition"
+              className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-black/60 backdrop-blur border border-white/15 text-white flex items-center justify-center active:scale-95 transition"
             >
               {muted ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
@@ -131,11 +129,12 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
                 />
               </div>
             )}
+          </div>
         </div>
       </div>
 
       {/* CTA ou hint */}
-      <div className="mt-3 pb-1 shrink-0">
+      <div className="mt-5 min-h-[72px]">
         {revealed ? (
           <div
             className="text-center"
@@ -144,9 +143,12 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
             <CtaButton onClick={onContinue}>
               QUERO VER O QUE TEM LÁ DENTRO 🔥
             </CtaButton>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Continua assistindo se quiser • só toca pra avançar
+            </p>
           </div>
         ) : (
-          <p className="text-center text-[11px] text-muted-foreground">
+          <p className="text-center text-[12px] text-muted-foreground">
             assista para continuar...
           </p>
         )}
