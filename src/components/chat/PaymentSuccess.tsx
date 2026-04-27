@@ -38,6 +38,7 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
   };
 
   const handleUpsellBuy = async () => {
+    if (upsellLoading || bumpPix) return;
     setUpsellLoading(true);
     setBumpError(null);
     try {
