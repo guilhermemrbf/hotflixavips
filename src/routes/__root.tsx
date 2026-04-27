@@ -29,14 +29,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "HOTFIX" },
+      { name: "description", content: "A sales page for a VIP Telegram group with integrated PIX payments via SyncPay, processed directly on the page." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "HOTFIX" },
+      { property: "og:description", content: "A sales page for a VIP Telegram group with integrated PIX payments via SyncPay, processed directly on the page." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "HOTFIX" },
+      { name: "twitter:description", content: "A sales page for a VIP Telegram group with integrated PIX payments via SyncPay, processed directly on the page." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/d2p3GYumcvQhWsjWN37oNpgA6G42/social-images/social-1777324732944-HOT_FLIX.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/d2p3GYumcvQhWsjWN37oNpgA6G42/social-images/social-1777324732944-HOT_FLIX.webp" },
     ],
     links: [
       {
