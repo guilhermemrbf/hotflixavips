@@ -105,14 +105,9 @@ export function ChatScreen() {
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
-              <p className="text-center text-[12px] text-muted-foreground mb-3">
+              <p className="text-center text-[11px] text-muted-foreground mb-2">
                 Área privada da Letícia • Acesso exclusivo
               </p>
-              <div className="text-center mb-3">
-                <span className="text-[11px] text-muted-foreground bg-secondary/60 px-3 py-1 rounded-full">
-                  hoje
-                </span>
-              </div>
 
               {stage1 < 1 ? (
                 <TypingBubble />
@@ -135,17 +130,17 @@ export function ChatScreen() {
 
               {stage1 >= 4 && (
                 <div
-                  className="mt-7 text-center"
+                  className="mt-5 text-center"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
-                  <p className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                  <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
                     ⚠️ Só quem chegou aqui{" "}
                     <span className="text-gradient">pode ver.</span>
                   </p>
-                  <div className="mt-5">
+                  <div className="mt-4">
                     <CtaButton delay={0} onClick={() => setStep("vsl")}>
                       QUERO VER 🔥
                     </CtaButton>
