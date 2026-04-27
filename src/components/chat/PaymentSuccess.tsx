@@ -14,16 +14,36 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
   const [bumpPix, setBumpPix] = useState<string | null>(null);
   const [bumpCopied, setBumpCopied] = useState(false);
   const [bumpError, setBumpError] = useState<string | null>(null);
+  // Redirect automático pra página de acesso
+  const [redirectIn, setRedirectIn] = useState(5);
+  const [redirected, setRedirected] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
     return () => clearInterval(t);
   }, []);
 
+  // Countdown de redirect (pausa se o usuário abrir o upsell Pix)
+  useEffect(() => {
+    if (redirected || bumpPix) return;
+    if (redirectIn <= 0) {
+      setRedirected(true);
+      window.open(telegramUrl, "_blank", "noopener,noreferrer");
+      // Fallback: se o popup for bloqueado, navega na mesma aba
+      setTimeout(() => {
+        window.location.href = telegramUrl;
+      }, 400);
+      return;
+    }
+    const t = setTimeout(() => setRedirectIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [redirectIn, redirected, bumpPix, telegramUrl]);
+
   const mm = String(Math.floor(countdown / 60)).padStart(2, "0");
   const ss = String(countdown % 60).padStart(2, "0");
 
   const handleOpen = () => {
+    setRedirected(true);
     window.open(telegramUrl, "_blank", "noopener,noreferrer");
   };
 
@@ -153,6 +173,24 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
           <p className="mt-1.5 text-[12px] sm:text-sm text-muted-foreground max-w-xs leading-snug">
             Acesso liberado. <strong className="text-foreground">Clica abaixo pra entrar.</strong>
           </p>
+
+          {/* Auto-redirect banner */}
+          {!redirected && !bumpPix && (
+            <div className="mt-3 w-full rounded-xl bg-online/10 border border-online/40 px-3 py-2 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="h-4 w-4 rounded-full border-2 border-online border-t-transparent animate-spin shrink-0" />
+                <p className="text-[11.5px] text-foreground font-semibold truncate">
+                  Redirecionando em <span className="text-online tabular-nums">{redirectIn}s</span>…
+                </p>
+              </div>
+              <button
+                onClick={() => setRedirected(true)}
+                className="shrink-0 text-[10.5px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+              >
+                cancelar
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Telegram CTA */}
