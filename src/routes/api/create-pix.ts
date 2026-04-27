@@ -100,10 +100,10 @@ export const Route = createFileRoute("/api/create-pix")({
 
           // 2) Chama SyncPay
           const amount = totalCents / 100;
-          const supaUrl = process.env.SUPABASE_URL;
-          const webhookUrl = supaUrl
-            ? `${supaUrl}/functions/v1/webhook-syncpay`
-            : `${new URL(request.url).origin}/api/public/syncpay-webhook`;
+          // Webhook URL estável: sempre aponta pra nossa rota pública
+          // (origin funciona em preview e produção; SUPABASE_URL às vezes
+          // não chega ao Worker)
+          const webhookUrl = `${new URL(request.url).origin}/api/public/syncpay-webhook`;
 
           // Auth token
           let token: string | undefined;

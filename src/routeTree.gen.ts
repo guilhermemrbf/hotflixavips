@@ -15,6 +15,7 @@ import { Route as ApiTestSyncpayRouteImport } from './routes/api/test-syncpay'
 import { Route as ApiCreatePixRouteImport } from './routes/api/create-pix'
 import { Route as ApiCheckPaymentRouteImport } from './routes/api/check-payment'
 import { Route as ApiPublicUtmifyTestRouteImport } from './routes/api/public/utmify-test'
+import { Route as ApiPublicSyncpayWebhookRouteImport } from './routes/api/public/syncpay-webhook'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
 const VipRoute = VipRouteImport.update({
@@ -47,6 +48,11 @@ const ApiPublicUtmifyTestRoute = ApiPublicUtmifyTestRouteImport.update({
   path: '/api/public/utmify-test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSyncpayWebhookRoute = ApiPublicSyncpayWebhookRouteImport.update({
+  id: '/api/public/syncpay-webhook',
+  path: '/api/public/syncpay-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
   id: '/api/public/mp-webhook',
   path: '/api/public/mp-webhook',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/test-syncpay': typeof ApiTestSyncpayRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/syncpay-webhook': typeof ApiPublicSyncpayWebhookRoute
   '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/test-syncpay': typeof ApiTestSyncpayRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/syncpay-webhook': typeof ApiPublicSyncpayWebhookRoute
   '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/api/create-pix': typeof ApiCreatePixRoute
   '/api/test-syncpay': typeof ApiTestSyncpayRoute
   '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/syncpay-webhook': typeof ApiPublicSyncpayWebhookRoute
   '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/api/create-pix'
     | '/api/test-syncpay'
     | '/api/public/mp-webhook'
+    | '/api/public/syncpay-webhook'
     | '/api/public/utmify-test'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/api/create-pix'
     | '/api/test-syncpay'
     | '/api/public/mp-webhook'
+    | '/api/public/syncpay-webhook'
     | '/api/public/utmify-test'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/api/create-pix'
     | '/api/test-syncpay'
     | '/api/public/mp-webhook'
+    | '/api/public/syncpay-webhook'
     | '/api/public/utmify-test'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   ApiCreatePixRoute: typeof ApiCreatePixRoute
   ApiTestSyncpayRoute: typeof ApiTestSyncpayRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
+  ApiPublicSyncpayWebhookRoute: typeof ApiPublicSyncpayWebhookRoute
   ApiPublicUtmifyTestRoute: typeof ApiPublicUtmifyTestRoute
 }
 
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicUtmifyTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/syncpay-webhook': {
+      id: '/api/public/syncpay-webhook'
+      path: '/api/public/syncpay-webhook'
+      fullPath: '/api/public/syncpay-webhook'
+      preLoaderRoute: typeof ApiPublicSyncpayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mp-webhook': {
       id: '/api/public/mp-webhook'
       path: '/api/public/mp-webhook'
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCreatePixRoute: ApiCreatePixRoute,
   ApiTestSyncpayRoute: ApiTestSyncpayRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
+  ApiPublicSyncpayWebhookRoute: ApiPublicSyncpayWebhookRoute,
   ApiPublicUtmifyTestRoute: ApiPublicUtmifyTestRoute,
 }
 export const routeTree = rootRouteImport
