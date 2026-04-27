@@ -186,6 +186,18 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </p>
       </div>
 
+      {/* Depoimento estilo print de chat — prova social antes do QR */}
+      <div className="flex justify-start">
+        <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-bubble-her border border-online/30 px-3 py-2 shadow-soft">
+          <p className="text-[12.5px] text-foreground leading-snug">
+            Caiu na hora, já tô dentro 🔥
+          </p>
+          <p className="text-[9.5px] text-muted-foreground mt-0.5">
+            — Carlos M. · agora
+          </p>
+        </div>
+      </div>
+
       <div className="rounded-2xl bg-card border border-border p-3 text-center">
         <div className="mx-auto h-40 w-40 sm:h-44 sm:w-44 rounded-xl bg-white p-2 flex items-center justify-center overflow-hidden">
           {qrSrc ? (
@@ -252,13 +264,59 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </span>
       </button>
 
+      {/* Destaque: liberação automática — maior medo do comprador */}
+      <div className="rounded-2xl bg-online/15 border-2 border-online/60 px-4 py-3 flex items-center gap-3 neon-glow">
+        <span className="shrink-0 h-9 w-9 rounded-full bg-online/30 border border-online flex items-center justify-center text-online text-[18px] font-bold">
+          ✓
+        </span>
+        <p className="text-[14px] sm:text-[15px] text-foreground font-extrabold leading-snug">
+          Liberação <span className="text-online">automática</span> assim que o Pix cair
+          <span className="block text-[11px] font-medium text-muted-foreground mt-0.5">
+            O link do grupo abre aqui mesmo.
+          </span>
+        </p>
+      </div>
+
+      {/* Passo a passo — público menos tech */}
+      <div className="rounded-2xl bg-card/60 border border-border p-3">
+        <p className="text-[10.5px] font-bold uppercase tracking-wider text-primary text-center mb-2">
+          Como pagar em 30 segundos
+        </p>
+        <ol className="space-y-1.5">
+          {[
+            "Abre o app do seu banco",
+            "Escolhe pagar com Pix · Copia e Cola",
+            "Cola o código e confirma o valor",
+            "Pronto — acesso liberado 🔥",
+          ].map((t, i) => (
+            <li key={i} className="flex gap-2.5 items-center">
+              <span className="shrink-0 h-5 w-5 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {i + 1}
+              </span>
+              <span className="text-[12.5px] text-foreground/90 leading-snug">{t}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
       <CtaButton onClick={handleCheckNow} disabled={checking}>
         {checking ? "VERIFICANDO…" : "JÁ PAGUEI ✅"}
       </CtaButton>
 
-      <p className="text-[10.5px] text-center text-muted-foreground leading-relaxed">
-        <span className="text-online">✓</span> Liberação automática assim que o Pix cair
-      </p>
+      {/* Aviso sobre nome diferente — elimina abandono por desconfiança */}
+      <details className="rounded-xl bg-amber-500/10 border border-amber-500/40 px-3 py-2 text-left">
+        <summary className="text-[11px] font-bold text-amber-200 cursor-pointer list-none flex items-center justify-between gap-2">
+          <span>⚠️ Nome do recebedor vai aparecer diferente — é normal</span>
+          <span className="text-amber-200/70 text-[10px]">ver</span>
+        </summary>
+        <p className="mt-2 text-[11px] text-amber-100/90 leading-snug">
+          O Pix é processado por uma <strong>processadora segura</strong> (ex: SyncPay, Mercado Pago).
+          Vai aparecer o nome da empresa em vez do meu — isso protege a sua identidade e a minha. 🔒
+        </p>
+        <p className="mt-1.5 text-[11px] text-amber-100/90 leading-snug">
+          Se o banco mostrar alerta, <strong>pode confirmar e finalizar tranquilo</strong> — é só aviso de primeiro pagamento.
+        </p>
+      </details>
     </div>
   );
 }
