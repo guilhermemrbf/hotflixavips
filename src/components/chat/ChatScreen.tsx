@@ -6,9 +6,10 @@ import { Plan, PlanCard } from "./PlanCard";
 import { PixDirect } from "./PixDirect";
 import { PaymentSuccess } from "./PaymentSuccess";
 import { Testimonials } from "./Testimonials";
+import { OrderBumpScreen } from "./OrderBumpScreen";
 import leticiaPreview from "@/assets/leticia-preview.jpg";
 
-type Step = 1 | 2 | 3 | 4 | 5;
+type Step = 1 | 2 | 3 | 4 | 5 | 6;
 
 const PLANS: Plan[] = [
   {
@@ -48,6 +49,7 @@ const VIP_ACCESS_URL = "https://t.me/+0ApNmK8IQSFmNDRh";
 export function ChatScreen() {
   const [step, setStep] = useState<Step>(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(PLANS[0]);
+  const [withBump, setWithBump] = useState(false);
   const [stage1, setStage1] = useState(0);
   const [stage2, setStage2] = useState(0);
   const [stage3, setStage3] = useState(0);
@@ -289,13 +291,31 @@ export function ChatScreen() {
           {/* ETAPA 4 */}
           {step === 4 && (
             <>
+              <OrderBumpScreen
+                plan={selectedPlan}
+                onBack={() => setStep(3)}
+                onConfirm={(bump) => {
+                  setWithBump(bump);
+                  setStep(5);
+                }}
+              />
+            </>
+          )}
+
+          {/* ETAPA 5 — PIX */}
+          {step === 5 && (
+            <>
               <button
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
                 className="text-xs text-muted-foreground hover:text-primary mb-4 flex items-center gap-1"
               >
-                ← trocar plano
+                ← voltar
               </button>
-              <PixDirect plan={selectedPlan} onPaid={() => setStep(5)} />
+              <PixDirect
+                plan={selectedPlan}
+                withBump={withBump}
+                onPaid={() => setStep(6)}
+              />
 
               <div className="mt-5 rounded-2xl bg-destructive/10 border border-destructive/40 px-4 py-3 text-center">
                 <p className="text-[13px] text-foreground font-medium leading-snug">
@@ -307,8 +327,8 @@ export function ChatScreen() {
             </>
           )}
 
-          {/* ETAPA 5 */}
-          {step === 5 && (
+          {/* ETAPA 6 — Sucesso */}
+          {step === 6 && (
             <div className="pt-2">
               <PaymentSuccess
                 telegramUrl={VIP_ACCESS_URL}
