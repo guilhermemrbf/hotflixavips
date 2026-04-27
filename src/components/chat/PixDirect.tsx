@@ -142,11 +142,29 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
   if (loading) {
     return (
       <div
-        className="space-y-4 px-1 text-center py-12"
+        className="space-y-3 px-0.5"
         style={{ animation: "message-in 0.5s ease both" }}
       >
-        <div className="mx-auto h-12 w-12 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-        <p className="text-sm text-muted-foreground">Gerando seu Pix… ⚡</p>
+        {/* Skeleton otimista — reduz percepção de espera */}
+        <div className="text-center space-y-1">
+          <h2 className="text-[17px] sm:text-xl font-extrabold text-foreground leading-tight">
+            Gerando seu Pix <span className="text-gradient">⚡</span>
+          </h2>
+          <p className="text-[11px] text-muted-foreground">
+            vai levar só um instante...
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-card border border-border p-3 text-center">
+          <div className="mx-auto h-40 w-40 sm:h-44 sm:w-44 rounded-xl bg-white/90 p-2 flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent -translate-x-full"
+              style={{ animation: "shimmer-slide 1.2s ease-in-out infinite" }} />
+            <div className="h-10 w-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          </div>
+          <div className="mt-2 mx-auto h-5 w-24 rounded bg-muted/40 animate-pulse" />
+        </div>
+
+        <div className="h-12 rounded-2xl bg-gradient-to-r from-primary/30 to-primary-glow/30 animate-pulse" />
       </div>
     );
   }
