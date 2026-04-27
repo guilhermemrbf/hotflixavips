@@ -8,6 +8,8 @@ interface Props {
 export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
   const [copied, setCopied] = useState(false);
   const [countdown, setCountdown] = useState(15 * 60); // 15 min
+  const [upsellDismissed, setUpsellDismissed] = useState(false);
+  const [upsellLoading, setUpsellLoading] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
@@ -28,6 +30,30 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* noop */
+    }
+  };
+
+  const handleUpsellBuy = async () => {
+    setUpsellLoading(true);
+    try {
+      const res = await fetch("/api/create-pix", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan_id: "bump", utms: {}, bump: true }),
+      });
+      const data = await res.json();
+      if (data?.pix_copy_paste) {
+        await navigator.clipboard.writeText(data.pix_copy_paste).catch(() => {});
+        alert(
+          "Codigo Pix do bonus copiado! Cole no app do seu banco pra finalizar R$ 3,90."
+        );
+      } else {
+        alert("Nao foi possivel gerar o bonus agora. Tenta novamente.");
+      }
+    } catch {
+      alert("Erro ao gerar o bonus. Tenta novamente.");
+    } finally {
+      setUpsellLoading(false);
     }
   };
 
@@ -103,12 +129,13 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
           </span>
 
           <h1 className="mt-4 text-[26px] sm:text-[30px] leading-tight font-extrabold text-foreground">
-            🎉 Tudo certo, <span className="text-gradient">amor</span>
+            🎉 <span className="text-gradient">Voce esta dentro!</span>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground max-w-xs">
-            Seu acesso VIP foi liberado.{" "}
-            <strong className="text-foreground">Toca no botão abaixo</strong>{" "}
-            pra entrar no privado agora 👇
+            Seu acesso foi liberado.{" "}
+            <strong className="text-foreground">
+              Clica no botao abaixo pra entrar.
+            </strong>
           </p>
 
           {planTitle && (
@@ -133,7 +160,7 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
             <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
               <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" />
             </svg>
-            <span className="tracking-wide">ENTRAR NO PRIVADO</span>
+            <span className="tracking-wide">ACESSAR AGORA</span>
             <svg
               viewBox="0 0 24 24"
               className="h-5 w-5 transition-transform group-hover:translate-x-1"
@@ -147,6 +174,40 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
             </svg>
           </span>
         </button>
+
+        {/* Upsell — Pack Secreto */}
+        {!upsellDismissed && (
+          <div className="mt-5 rounded-2xl border-2 border-primary/60 bg-gradient-to-br from-primary/15 via-card to-card p-4 neon-glow">
+            <p className="text-[11px] font-extrabold uppercase tracking-widest text-primary">
+              🎁 Espera — antes de entrar
+            </p>
+            <p className="mt-2 text-[15px] font-extrabold text-foreground leading-snug">
+              Voce ganhou um bonus.
+            </p>
+            <p className="mt-1.5 text-[12px] text-muted-foreground leading-snug">
+              So pra quem comprou agora: o{" "}
+              <strong className="text-foreground">Pack Secreto completo</strong>{" "}
+              por mais{" "}
+              <strong className="text-primary">R$ 3,90</strong>. Nao vai
+              aparecer de novo depois que voce sair.
+            </p>
+            <button
+              onClick={handleUpsellBuy}
+              disabled={upsellLoading}
+              className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
+            >
+              {upsellLoading
+                ? "Gerando Pix do bonus…"
+                : "QUERO O BONUS — R$ 3,90 SO AGORA"}
+            </button>
+            <button
+              onClick={() => setUpsellDismissed(true)}
+              className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+            >
+              Nao, vou entrar sem o bonus
+            </button>
+          </div>
+        )}
 
         {/* Copy link fallback */}
         <button
