@@ -287,7 +287,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
               O Pix é processado por uma{" "}
               <strong>processadora de pagamentos segura</strong> (gateway). Por
               isso vai aparecer um nome de empresa (ex: <em>Mercado Pago, WinnPay, Guilherme</em>)
-              em vez do meu nome — isso protege a minha identidade e a sua. 🔒
+              (ex: <em>SyncPay, Mercado Pago, WinnPay</em>) em vez do meu nome — isso protege a minha identidade e a sua. 🔒
             </p>
             <p className="text-[11px] text-amber-100/90 leading-snug">
               Se o seu banco mostrar <strong>alerta de golpe</strong> ou pedir
