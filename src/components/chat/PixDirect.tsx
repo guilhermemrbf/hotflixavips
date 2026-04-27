@@ -174,41 +174,29 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
 
   return (
     <div
-      className="space-y-4 px-0.5"
+      className="space-y-2.5 px-0.5"
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <div className="text-center">
-        <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-3 py-1 rounded-full">
+        <span className="inline-block text-[9.5px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-2.5 py-0.5 rounded-full">
           Pix gerado · {pix.plan_title} · 🔥 Club Proibido - Hotflix
         </span>
-        <h2 className="text-[20px] sm:text-xl font-extrabold text-foreground mt-3 leading-tight px-2">
+        <h2 className="text-[16px] sm:text-xl font-extrabold text-foreground mt-2 leading-tight px-2">
           Falta <span className="text-gradient">1 passo</span> pra voce entrar
         </h2>
       </div>
 
-      <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/40 px-4 py-3 flex items-center justify-center gap-3">
-        <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">
+      <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/40 px-3 py-1.5 flex items-center justify-center gap-2">
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
           ⏳ Expira em
         </span>
-        <span className="text-[28px] sm:text-3xl font-extrabold text-gradient tabular-nums leading-none">
+        <span className="text-[20px] sm:text-2xl font-extrabold text-gradient tabular-nums leading-none">
           {mm}:{ss}
         </span>
       </div>
 
-      {/* Depoimento simulado estilo print de chat */}
-      <div className="flex justify-end">
-        <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-online/15 border border-online/40 px-3.5 py-2.5 shadow-soft">
-          <p className="text-[13px] text-foreground leading-snug">
-            Caiu na hora, já tô dentro 🔥
-          </p>
-          <p className="text-[10px] text-muted-foreground mt-1 text-right">
-            — Carlos M. · agora
-          </p>
-        </div>
-      </div>
-
-      <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 text-center">
-        <div className="mx-auto h-44 w-44 sm:h-48 sm:w-48 rounded-xl bg-white p-2.5 sm:p-3 flex items-center justify-center overflow-hidden">
+      <div className="rounded-2xl bg-card border border-border p-3 text-center">
+        <div className="mx-auto h-36 w-36 sm:h-44 sm:w-44 rounded-xl bg-white p-2 flex items-center justify-center overflow-hidden">
           {qrSrc ? (
             <img
               src={qrSrc}
@@ -218,7 +206,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
           ) : pix.pix_copy_paste ? (
             <QRCodeSVG
               value={pix.pix_copy_paste}
-              size={184}
+              size={148}
               level="M"
               className="h-full w-full"
             />
@@ -228,56 +216,9 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
             </p>
           )}
         </div>
-        <p className="text-[17px] sm:text-lg text-foreground mt-3 font-extrabold">
-          {totalLabel} <span className="text-muted-foreground font-medium text-sm">via Pix</span>
+        <p className="text-[15px] sm:text-lg text-foreground mt-2 font-extrabold">
+          {totalLabel} <span className="text-muted-foreground font-medium text-[12px]">via Pix</span>
         </p>
-        <p className="text-[11px] text-muted-foreground mt-0.5">
-          Escaneie o QR ou use o código abaixo 👇
-        </p>
-      </div>
-
-      <div className="rounded-2xl bg-card/60 border border-border p-4 space-y-3">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-primary text-center">
-          Como pagar em 30 segundos
-        </p>
-        <ol className="space-y-2.5">
-          {[
-            {
-              n: "1",
-              t: "Abra o app do seu banco",
-              d: "Nubank, Itaú, Caixa, PicPay, Mercado Pago…",
-            },
-            {
-              n: "2",
-              t: "Escolha pagar com Pix",
-              d: 'Toque em "Copia e Cola" ou "Ler QR Code"',
-            },
-            {
-              n: "3",
-              t: "Cole o código ou escaneie o QR",
-              d: "Confira o valor e finalize",
-            },
-            {
-              n: "4",
-              t: "Pronto! Acesso liberado 🔥",
-              d: "Liberação automática em segundos",
-            },
-          ].map((s) => (
-            <li key={s.n} className="flex gap-3 items-start">
-              <span className="shrink-0 h-6 w-6 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-[11px] font-bold flex items-center justify-center neon-glow">
-                {s.n}
-              </span>
-              <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-foreground leading-tight">
-                  {s.t}
-                </p>
-                <p className="text-[11px] text-muted-foreground leading-snug">
-                  {s.d}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
       </div>
 
       {/* Ação principal no mobile: copiar código */}
@@ -285,7 +226,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         onClick={handleCopy}
         disabled={!pix.pix_copy_paste || copyState === "copying"}
         aria-live="polite"
-        className={`relative w-full overflow-hidden rounded-2xl px-4 py-4 text-[15px] font-extrabold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-[0.98] ${
+        className={`relative w-full overflow-hidden rounded-2xl px-4 py-3 text-[14px] font-extrabold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-[0.98] ${
           copyState === "copied"
             ? "bg-online/20 border-2 border-online text-online scale-[1.01]"
             : "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow"
@@ -320,47 +261,32 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </span>
       </button>
 
-      <div className="rounded-2xl bg-online/15 border-2 border-online/50 p-4 flex items-start gap-3">
-        <span className="shrink-0 h-8 w-8 rounded-full bg-online/30 border border-online flex items-center justify-center text-online text-lg font-bold">
+      <div className="rounded-2xl bg-online/15 border-2 border-online/50 px-3 py-2 flex items-start gap-2">
+        <span className="shrink-0 h-6 w-6 rounded-full bg-online/30 border border-online flex items-center justify-center text-online text-[14px] font-bold">
           ✓
         </span>
-        <p className="text-[14px] sm:text-[15px] text-foreground font-semibold leading-snug">
+        <p className="text-[12px] sm:text-[13px] text-foreground font-semibold leading-snug">
           Liberação <span className="text-online">automática</span> assim que o Pix cair.{" "}
           <span className="text-muted-foreground font-medium">O link do grupo abre aqui mesmo.</span>
         </p>
-      </div>
-
-      <div className="rounded-2xl bg-amber-500/10 border border-amber-500/40 p-4 space-y-2">
-        <div className="flex items-start gap-2">
-          <span className="text-lg leading-none">⚠️</span>
-          <div className="space-y-1.5">
-            <p className="text-[12px] font-bold text-amber-200 leading-tight">
-              Nome do recebedor vai aparecer diferente — é normal!
-            </p>
-            <p className="text-[11px] text-amber-100/90 leading-snug">
-              O Pix é processado por uma{" "}
-              <strong>processadora de pagamentos segura</strong> (gateway). Por
-              isso vai aparecer um nome de empresa (ex: <em>SyncPay, Mercado Pago, WinnPay</em>)
-              em vez do meu nome — isso protege a minha identidade e a sua. 🔒
-            </p>
-            <p className="text-[11px] text-amber-100/90 leading-snug">
-              Se o seu banco mostrar <strong>alerta de golpe</strong> ou pedir
-              confirmação, pode prosseguir tranquilo(a) — é só o banco avisando
-              que é a primeira vez que você paga pra esse recebedor.{" "}
-              <strong>Confirme e finalize normalmente.</strong>
-            </p>
-          </div>
-        </div>
       </div>
 
       <CtaButton onClick={handleCheckNow} disabled={checking}>
         {checking ? "VERIFICANDO…" : "JÁ PAGUEI ✅"}
       </CtaButton>
 
-      <p className="text-[11px] text-center text-muted-foreground leading-relaxed">
-        🔒 Liberação{" "}
-        <strong className="text-foreground">100% automática</strong> assim que o
-        Pix cair · pagamento processado por gateway certificado
+      <details className="rounded-xl bg-amber-500/10 border border-amber-500/40 px-3 py-2 text-left">
+        <summary className="text-[11px] font-bold text-amber-200 cursor-pointer">
+          ⚠️ Nome do recebedor pode aparecer diferente
+        </summary>
+        <p className="mt-1.5 text-[10.5px] text-amber-100/90 leading-snug">
+          O Pix é processado por gateway seguro (ex: SyncPay, Mercado Pago).
+          Se seu banco alertar, confirme e finalize normalmente. 🔒
+        </p>
+      </details>
+
+      <p className="text-[10px] text-center text-muted-foreground leading-relaxed">
+        🔒 Liberação <strong className="text-foreground">100% automática</strong> · gateway certificado
       </p>
     </div>
   );

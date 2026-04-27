@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { CtaButton } from "./CtaButton";
-import { Bubble } from "./Bubble";
 
 interface Props {
   onContinue: () => void;

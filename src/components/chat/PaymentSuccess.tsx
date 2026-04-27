@@ -115,15 +115,15 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
       </div>
 
       {/* Card */}
-      <div className="rounded-3xl border border-primary/40 bg-gradient-to-b from-card via-card to-background/60 p-5 sm:p-8 shadow-soft neon-glow">
+      <div className="rounded-3xl border border-primary/40 bg-gradient-to-b from-card via-card to-background/60 p-4 sm:p-8 shadow-soft neon-glow">
         {/* Success seal */}
         <div className="flex flex-col items-center text-center">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-online/30 blur-2xl animate-pulse-glow" />
-            <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-online to-primary-glow flex items-center justify-center neon-glow">
+            <div className="relative h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-online to-primary-glow flex items-center justify-center neon-glow">
               <svg
                 viewBox="0 0 24 24"
-                className="h-10 w-10 sm:h-12 sm:w-12 text-primary-foreground"
+                className="h-7 w-7 sm:h-10 sm:w-10 text-primary-foreground"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="3"
@@ -142,33 +142,23 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
             </div>
           </div>
 
-          <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] bg-online/15 text-online px-3 py-1.5 rounded-full">
+          <span className="mt-2.5 inline-flex items-center gap-1.5 text-[9.5px] font-bold uppercase tracking-[0.2em] bg-online/15 text-online px-2.5 py-1 rounded-full">
             <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse" />
             Pagamento aprovado
           </span>
 
-          <h1 className="mt-3 text-[24px] sm:text-[30px] leading-[1.1] font-extrabold text-foreground">
+          <h1 className="mt-2 text-[20px] sm:text-[30px] leading-[1.1] font-extrabold text-foreground">
             🎉 <span className="text-gradient">Voce esta dentro!</span>
           </h1>
-          <p className="mt-2 text-[13px] sm:text-sm text-muted-foreground max-w-xs leading-snug">
-            Seu acesso foi liberado.{" "}
-            <strong className="text-foreground">
-              Clica no botao abaixo pra entrar.
-            </strong>
+          <p className="mt-1.5 text-[12px] sm:text-sm text-muted-foreground max-w-xs leading-snug">
+            Acesso liberado. <strong className="text-foreground">Clica abaixo pra entrar.</strong>
           </p>
-
-          {planTitle && (
-            <div className="mt-3 inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/60 px-3 py-1.5 rounded-full max-w-full">
-              <span>Plano:</span>
-              <span className="text-foreground truncate">{planTitle}</span>
-            </div>
-          )}
         </div>
 
         {/* Telegram CTA */}
         <button
           onClick={handleOpen}
-          className="group relative mt-6 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#229ED9] via-[#2AABEE] to-[#229ED9] px-5 py-4 text-white font-extrabold text-[15px] sm:text-base shadow-soft transition active:scale-[0.98]"
+          className="group relative mt-4 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#229ED9] via-[#2AABEE] to-[#229ED9] px-5 py-3 text-white font-extrabold text-[14.5px] sm:text-base shadow-soft transition active:scale-[0.98]"
           style={{
             boxShadow:
               "0 0 0 1px rgba(255,255,255,0.08) inset, 0 12px 30px -8px rgba(34,158,217,0.55)",
@@ -176,13 +166,13 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
         >
           <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-full transition-transform duration-700" />
           <span className="relative flex items-center justify-center gap-3">
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
               <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" />
             </svg>
             <span className="tracking-wide">ACESSAR AGORA</span>
             <svg
               viewBox="0 0 24 24"
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
+              className="h-4 w-4 transition-transform group-hover:translate-x-1"
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
@@ -196,19 +186,12 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
 
         {/* Upsell — Pack Secreto */}
         {!upsellDismissed && (
-          <div className="mt-5 rounded-2xl border-2 border-primary/60 bg-gradient-to-br from-primary/15 via-card to-card p-4 neon-glow">
-            <p className="text-[11px] font-extrabold uppercase tracking-widest text-primary">
+          <div className="mt-3 rounded-2xl border-2 border-primary/60 bg-gradient-to-br from-primary/15 via-card to-card p-3 neon-glow">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-primary">
               🎁 Espera — antes de entrar
             </p>
-            <p className="mt-2 text-[15px] font-extrabold text-foreground leading-snug">
-              Voce ganhou um bonus.
-            </p>
-            <p className="mt-1.5 text-[12px] text-muted-foreground leading-snug">
-              So pra quem comprou agora: o{" "}
-              <strong className="text-foreground">Pack Secreto completo</strong>{" "}
-              por mais{" "}
-              <strong className="text-primary">R$ 3,90</strong>. Nao vai
-              aparecer de novo depois que voce sair.
+            <p className="mt-1.5 text-[13px] font-extrabold text-foreground leading-snug">
+              Voce ganhou um bonus: <strong className="text-primary">Pack Secreto por R$ 3,90</strong>.
             </p>
 
             {!bumpPix ? (
@@ -216,35 +199,35 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
                 <button
                   onClick={handleUpsellBuy}
                   disabled={upsellLoading}
-                  className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
+                  className="mt-2 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-2.5 text-[13px] font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
                 >
                   {upsellLoading
                     ? "Gerando Pix do bonus…"
                     : "QUERO O BONUS — R$ 3,90 SO AGORA"}
                 </button>
                 {bumpError && (
-                  <p className="mt-2 text-[11px] text-destructive text-center">
+                  <p className="mt-1.5 text-[11px] text-destructive text-center">
                     {bumpError}
                   </p>
                 )}
                 <button
                   onClick={handleDismissUpsell}
-                  className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+                  className="mt-1.5 w-full text-center text-[10.5px] text-muted-foreground hover:text-foreground underline underline-offset-2"
                 >
                   Nao, vou entrar sem o bonus
                 </button>
               </>
             ) : (
-              <div className="mt-4 flex flex-col items-center gap-3">
-                <p className="text-[12px] text-foreground text-center font-semibold">
+              <div className="mt-3 flex flex-col items-center gap-2">
+                <p className="text-[11.5px] text-foreground text-center font-semibold">
                   Pague R$ 3,90 via Pix pra liberar o Pack Secreto:
                 </p>
-                <div className="bg-white p-3 rounded-xl">
-                  <QRCodeSVG value={bumpPix} size={160} />
+                <div className="bg-white p-2 rounded-xl">
+                  <QRCodeSVG value={bumpPix} size={128} />
                 </div>
                 <button
                   onClick={handleBumpCopy}
-                  className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft active:scale-[0.98] transition"
+                  className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-2.5 text-[13px] font-extrabold uppercase tracking-wide shadow-soft active:scale-[0.98] transition"
                 >
                   {bumpCopied ? "✅ Codigo copiado" : "Copiar codigo Pix"}
                 </button>
@@ -262,18 +245,18 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
         {/* Copy link fallback */}
         <button
           onClick={handleCopy}
-          className="mt-3 w-full rounded-xl border border-border bg-secondary/40 hover:bg-secondary/70 px-4 py-3 text-xs font-semibold text-muted-foreground hover:text-foreground transition flex items-center justify-center gap-2"
+          className="mt-2 w-full rounded-xl border border-border bg-secondary/40 hover:bg-secondary/70 px-4 py-2 text-[11.5px] font-semibold text-muted-foreground hover:text-foreground transition flex items-center justify-center gap-2"
         >
           {copied ? (
             <>
-              <svg viewBox="0 0 24 24" className="h-4 w-4 text-online" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-online" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 13l4 4L19 7" />
               </svg>
               <span className="text-online">Link copiado</span>
             </>
           ) : (
             <>
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
               </svg>
@@ -282,43 +265,21 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
           )}
         </button>
 
-        {/* Steps */}
-        <div className="mt-6 rounded-2xl bg-secondary/40 border border-border/60 p-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-3">
-            Como entrar
-          </p>
-          <ol className="space-y-2.5">
-            {[
-              "Toca no botão acima",
-              "Abre o Telegram e clica em ENTRAR no canal",
-              "Pronto — 🔥 Club Proibido - Hotflix liberado",
-            ].map((s, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm text-foreground/90">
-                <span className="flex-shrink-0 mt-0.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
-                  {i + 1}
-                </span>
-                <span className="leading-snug">{s}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
         {/* Urgency */}
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-destructive/10 border border-destructive/30 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="text-base">⏳</span>
-            <span className="text-[12px] text-foreground font-medium">
+        <div className="mt-3 flex items-center justify-between rounded-xl bg-destructive/10 border border-destructive/30 px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm">⏳</span>
+            <span className="text-[11px] text-foreground font-medium">
               Acesso expira em
             </span>
           </div>
-          <span className="font-mono text-base font-bold text-destructive tabular-nums">
+          <span className="font-mono text-[14px] font-bold text-destructive tabular-nums">
             {mm}:{ss}
           </span>
         </div>
 
-        {/* Trust */}
-        <p className="mt-5 text-center text-[11px] text-muted-foreground leading-relaxed">
-          🔒 Acesso pessoal e intransferível • Suporte 24h no privado
+        <p className="mt-3 text-center text-[10px] text-muted-foreground leading-relaxed">
+          🔒 Acesso pessoal e intransferível • Suporte 24h
         </p>
       </div>
 
