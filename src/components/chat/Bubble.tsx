@@ -16,7 +16,7 @@ export function Bubble({
   return (
     <div
       className={cn(
-        "flex w-full mb-2",
+        "flex w-full mb-1.5",
         from === "me" ? "justify-end" : "justify-start",
         className
       )}
@@ -27,7 +27,7 @@ export function Bubble({
     >
       <div
         className={cn(
-          "max-w-[85%] sm:max-w-[78%] text-[14px] sm:text-[15px] leading-snug shadow-soft",
+          "max-w-[85%] sm:max-w-[78%] text-[13.5px] sm:text-[14.5px] leading-snug shadow-soft",
           from === "her" ? "bubble-her" : "bubble-me font-medium"
         )}
       >
@@ -40,7 +40,7 @@ export function Bubble({
 export function TypingBubble({ delay = 0 }: { delay?: number }) {
   return (
     <div
-      className="flex justify-start mb-2"
+      className="flex justify-start mb-1.5"
       style={{
         animation: `message-in 0.3s ease both`,
         animationDelay: `${delay}ms`,

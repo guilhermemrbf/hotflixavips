@@ -119,11 +119,11 @@ export function ChatScreen() {
       <ChatHeader />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
-        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-3 sm:pt-5 pb-[max(5rem,env(safe-area-inset-bottom))]">
+        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
-              <p className="text-center text-[11px] text-muted-foreground mb-2">
+              <p className="text-center text-[10.5px] text-muted-foreground mb-1.5">
                 Letícia • Hotflix — Acesso exclusivo
               </p>
 
@@ -148,21 +148,21 @@ export function ChatScreen() {
 
               {stage1 >= 4 && (
                 <div
-                  className="mt-7 text-center"
+                  className="mt-4 text-center"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
-                  <p className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                  <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
                     ⚠️ Só quem chegou aqui{" "}
                     <span className="text-gradient">pode ver.</span>
                   </p>
-                  <div className="mt-5">
+                  <div className="mt-3">
                     <CtaButton delay={0} onClick={() => setStep("vsl")}>
                       QUERO VER 🔥
                     </CtaButton>
-                    <p className="mt-2 text-[11px] text-muted-foreground">
+                    <p className="mt-1.5 text-[10.5px] text-muted-foreground">
                       Grátis pra ver • Sem cadastro
                     </p>
                   </div>
@@ -181,7 +181,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep("vsl")}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -190,7 +190,7 @@ export function ChatScreen() {
                 <TypingBubble />
               ) : (
                 <div
-                  className="flex justify-start mb-3"
+                  className="flex justify-start mb-2"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
@@ -201,7 +201,7 @@ export function ChatScreen() {
                       <img
                         src={leticiaPreview}
                         alt="Prévia exclusiva Letícia • Hotflix"
-                        className="w-full h-auto block"
+                        className="w-full h-auto block max-h-[38dvh] object-cover"
                         loading="eager"
                       />
                       <div className="absolute top-2 left-2">
@@ -239,23 +239,12 @@ export function ChatScreen() {
 
               {stage2 >= 8 && (
                 <div
-                  className="mt-6"
+                  className="mt-4"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
-                  <div className="text-center mb-3 flex flex-col items-center gap-0.5">
-                    <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                      role pra baixo
-                    </span>
-                    <span
-                      className="text-primary text-lg leading-none"
-                      style={{ animation: "bounce-down 1.4s ease-in-out infinite" }}
-                    >
-                      ↓
-                    </span>
-                  </div>
                   <CtaButton delay={0} onClick={() => setStep(3)}>
                     LIBERAR MEU ACESSO 🔥
                   </CtaButton>
@@ -269,38 +258,34 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(2)}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
 
               <div
-                className="text-center mb-5"
+                className="text-center mb-3"
                 style={{
                   animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                 }}
               >
-                <span className="inline-block text-[11px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-3 py-1 rounded-full mb-3">
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
                   Acesso Liberado
                 </span>
-                <h2 className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
                   🔥 Escolhe seu acesso agora —{" "}
                   <span className="text-gradient">
                     esse preco nao vai durar
                   </span>
                 </h2>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Toca no plano e{" "}
-                  <strong className="text-foreground">ja acessa tudo</strong>.
-                </p>
-                <p className="mt-2 text-[13px] font-semibold text-primary">
+                <p className="mt-1.5 text-[12px] font-semibold text-primary">
                   Você vai entrar no 🔥 Club Proibido - Hotflix
                 </p>
               </div>
 
               {stage3 >= 1 && (
                 <div
-                  className="space-y-3"
+                  className="space-y-2"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
@@ -346,7 +331,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(4)}
-                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -356,8 +341,8 @@ export function ChatScreen() {
                 onPaid={() => setStep(6)}
               />
 
-              <div className="mt-5 rounded-2xl bg-destructive/10 border border-destructive/40 px-4 py-3 text-center">
-                <p className="text-[13px] text-foreground font-medium leading-snug">
+              <div className="mt-3 rounded-2xl bg-destructive/10 border border-destructive/40 px-3 py-2 text-center">
+                <p className="text-[12px] text-foreground font-medium leading-snug">
                   🚨 Promoção ativa{" "}
                   <strong className="text-primary">só agora</strong>. Se sair
                   da página pode perder.
