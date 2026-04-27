@@ -124,7 +124,7 @@ export function ChatScreen() {
           {step === 1 && (
             <>
               <p className="text-center text-[11px] text-muted-foreground mb-2">
-                Área privada da Letícia • Acesso exclusivo
+                Letícia • Hotflix — Acesso exclusivo
               </p>
 
               {stage1 < 1 ? (
@@ -200,7 +200,7 @@ export function ChatScreen() {
                     <div className="relative rounded-2xl overflow-hidden border border-primary/40 neon-glow">
                       <img
                         src={leticiaPreview}
-                        alt="Prévia exclusiva Letícia VIP"
+                        alt="Prévia exclusiva Letícia • Hotflix"
                         className="w-full h-auto block"
                         loading="eager"
                       />

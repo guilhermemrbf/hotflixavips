@@ -8,7 +8,7 @@ export function ChatHeader() {
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary-glow blur-md opacity-70" />
           <img
             src={leticiaAvatar}
-            alt="Letícia VIP"
+            alt="Letícia • Hotflix"
             className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-2 ring-primary/60 object-cover"
             loading="eager"
           />
