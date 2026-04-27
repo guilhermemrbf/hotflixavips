@@ -50,7 +50,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
 
   return (
     <div
-      className="pt-0 flex flex-col h-full"
+      className="flex-1 flex flex-col min-h-0"
       style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
     >
       <Bubble delay={0}>
@@ -58,14 +58,15 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
       </Bubble>
 
       {/* Player 9:16 */}
-      <div className="mt-2 flex justify-center">
+      <div className="mt-2 flex-1 min-h-0 flex items-center justify-center">
         <div
-          className="relative rounded-[1.25rem] overflow-hidden border-2 border-primary/40 bg-black neon-glow mx-auto"
+          className="relative rounded-[1.25rem] overflow-hidden border-2 border-primary/40 bg-black neon-glow"
           style={{
             aspectRatio: "9 / 16",
-            maxHeight: "min(62dvh, 560px)",
+            height: "100%",
+            maxHeight: "100%",
             width: "auto",
-            height: "min(62dvh, 560px)",
+            maxWidth: "100%",
           }}
         >
             <video
@@ -134,7 +135,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
       </div>
 
       {/* CTA ou hint */}
-      <div className="mt-3 min-h-[60px]">
+      <div className="mt-3 pb-1 shrink-0">
         {revealed ? (
           <div
             className="text-center"
