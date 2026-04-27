@@ -24,7 +24,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
   const [pix, setPix] = useState<PixData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(599);
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copying" | "copied">("idle");
   const [checking, setChecking] = useState(false);
   const bump = withBump;
   // Guard contra double-invoke do StrictMode / re-render
@@ -109,9 +109,18 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
 
   const handleCopy = async () => {
     if (!pix?.pix_copy_paste) return;
-    await navigator.clipboard.writeText(pix.pix_copy_paste);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyState === "copying") return;
+    setCopyState("copying");
+    try {
+      await navigator.clipboard.writeText(pix.pix_copy_paste);
+      // pequeno atraso pra feedback "Copiando..." ser perceptível
+      await new Promise((r) => setTimeout(r, 350));
+      setCopyState("copied");
+      if (navigator.vibrate) navigator.vibrate(30);
+      setTimeout(() => setCopyState("idle"), 2600);
+    } catch {
+      setCopyState("idle");
+    }
   };
 
   const handleCheckNow = async () => {
@@ -262,14 +271,41 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
       {/* Ação principal no mobile: copiar código */}
       <button
         onClick={handleCopy}
-        disabled={!pix.pix_copy_paste}
-        className={`w-full rounded-2xl px-4 py-4 text-[15px] font-extrabold transition flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] ${
-          copied
-            ? "bg-online/20 border-2 border-online text-online"
+        disabled={!pix.pix_copy_paste || copyState === "copying"}
+        aria-live="polite"
+        className={`relative w-full overflow-hidden rounded-2xl px-4 py-4 text-[15px] font-extrabold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-[0.98] ${
+          copyState === "copied"
+            ? "bg-online/20 border-2 border-online text-online scale-[1.01]"
             : "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow"
         }`}
       >
-        {copied ? "✓ CÓDIGO COPIADO — COLE NO APP DO BANCO" : "📋 COPIAR CÓDIGO PIX"}
+        {/* shimmer enquanto copia */}
+        {copyState === "copying" && (
+          <span
+            aria-hidden
+            className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent"
+            style={{ animation: "shimmer-slide 0.9s ease-in-out infinite" }}
+          />
+        )}
+        <span
+          key={copyState}
+          className="relative z-[1] inline-flex items-center gap-2"
+          style={{ animation: "message-in 0.35s cubic-bezier(0.22,1,0.36,1) both" }}
+        >
+          {copyState === "copying" && (
+            <>
+              <span className="h-4 w-4 rounded-full border-2 border-primary-foreground/70 border-t-transparent animate-spin" />
+              COPIANDO…
+            </>
+          )}
+          {copyState === "copied" && (
+            <>
+              <span className="text-[18px] leading-none">✓</span>
+              COPIADO! COLE NO APP DO BANCO
+            </>
+          )}
+          {copyState === "idle" && <>📋 COPIAR CÓDIGO PIX</>}
+        </span>
       </button>
 
       <p className="text-center text-[12px] text-online leading-snug px-2">
