@@ -97,65 +97,60 @@ export function ChatScreen() {
   }, [step, stage1, stage2, stage3]);
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] flex flex-col">
       <ChatHeader />
 
-      <div
-        ref={scrollRef}
-        className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
-      >
-        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] min-h-full flex flex-col">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-3 sm:pt-5 pb-[max(5rem,env(safe-area-inset-bottom))]">
           {/* ETAPA 1 */}
           {step === 1 && (
-            <div className="flex-1 flex flex-col">
+            <>
               <p className="text-center text-[11px] text-muted-foreground mb-2">
                 Área privada da Letícia • Acesso exclusivo
               </p>
 
-              <div className="flex-1 flex flex-col justify-end">
-                {stage1 < 1 ? (
-                  <TypingBubble />
-                ) : (
-                  <Bubble delay={0}>Oii... tava pensando em voce</Bubble>
-                )}
-                {stage1 >= 1 && stage1 < 2 && <TypingBubble />}
-                {stage1 >= 2 && (
-                  <Bubble delay={0}>
-                    Separei uma coisa especial so pra quem chegou aqui
-                  </Bubble>
-                )}
-                {stage1 >= 2 && stage1 < 3 && <TypingBubble />}
-                {stage1 >= 3 && (
-                  <Bubble delay={0}>
-                    Tenho um <strong>acesso privado</strong> esperando voce — coisa
-                    que eu nao mando pra qualquer um
-                  </Bubble>
-                )}
-              </div>
+              {stage1 < 1 ? (
+                <TypingBubble />
+              ) : (
+                <Bubble delay={0}>Oii... tava pensando em voce</Bubble>
+              )}
+              {stage1 >= 1 && stage1 < 2 && <TypingBubble />}
+              {stage1 >= 2 && (
+                <Bubble delay={0}>
+                  Separei uma coisa especial so pra quem chegou aqui
+                </Bubble>
+              )}
+              {stage1 >= 2 && stage1 < 3 && <TypingBubble />}
+              {stage1 >= 3 && (
+                <Bubble delay={0}>
+                  Tenho um <strong>acesso privado</strong> esperando voce — coisa
+                  que eu nao mando pra qualquer um
+                </Bubble>
+              )}
 
               {stage1 >= 4 && (
                 <div
-                  className="mt-4 text-center pb-2"
+                  className="mt-7 text-center"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
-                  <p className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                  <p className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
                     ⚠️ Só quem chegou aqui{" "}
                     <span className="text-gradient">pode ver.</span>
                   </p>
-                  <div className="mt-3">
+                  <div className="mt-5">
                     <CtaButton delay={0} onClick={() => setStep("vsl")}>
                       QUERO VER 🔥
                     </CtaButton>
-                    <p className="mt-1.5 text-[11px] text-muted-foreground">
+                    <p className="mt-2 text-[11px] text-muted-foreground">
                       Grátis pra ver • Sem cadastro
                     </p>
                   </div>
                 </div>
               )}
-            </div>
+            </>
           )}
 
           {/* ETAPA VSL */}
@@ -165,108 +160,129 @@ export function ChatScreen() {
 
           {/* ETAPA 2 */}
           {step === 2 && (
-            <div className="flex-1 flex flex-col">
+            <>
               <button
                 onClick={() => setStep("vsl")}
-                className="text-xs text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition self-start"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
 
-              <div className="flex-1 flex flex-col justify-end min-h-0">
-                {stage2 < 1 ? (
-                  <TypingBubble />
-                ) : (
-                  <div
-                    className="flex justify-start mb-2"
-                    style={{
-                      animation:
-                        "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-                    }}
-                  >
-                    <div className="max-w-[70%] p-1.5 bg-bubble-her rounded-[1.25rem] rounded-bl-[0.25rem] shadow-soft">
-                      <div className="relative rounded-2xl overflow-hidden border border-primary/40 neon-glow">
-                        <img
-                          src={leticiaPreview}
-                          alt="Prévia exclusiva Letícia VIP"
-                          className="w-full h-auto block max-h-[38dvh] object-cover"
-                          loading="eager"
-                        />
-                        <div className="absolute top-2 left-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-full shadow-lg">
-                            🔥 Prévia
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {stage2 >= 1 && stage2 < 3 && <TypingBubble />}
-                {stage2 >= 3 && (
-                  <Bubble delay={0}>
-                    To te mandando uma <strong>previa</strong> so pra voce ter uma ideia...
-                  </Bubble>
-                )}
-
-                {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
-                {stage2 >= 5 && (
-                  <Bubble delay={0}>
-                    Isso é só o que posso mostrar aqui fora. Lá dentro vai{" "}
-                    <strong>muito além</strong> — fica só entre a gente.
-                  </Bubble>
-                )}
-              </div>
-
-              {stage2 >= 7 && (
+              {stage2 < 1 ? (
+                <TypingBubble />
+              ) : (
                 <div
-                  className="mt-3 pb-2"
+                  className="flex justify-start mb-3"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
+                  <div className="max-w-[82%] p-1.5 bg-bubble-her rounded-[1.25rem] rounded-bl-[0.25rem] shadow-soft">
+                    <div className="relative rounded-2xl overflow-hidden border border-primary/40 neon-glow">
+                      <img
+                        src={leticiaPreview}
+                        alt="Prévia exclusiva Letícia VIP"
+                        className="w-full h-auto block"
+                        loading="eager"
+                      />
+                      <div className="absolute top-2 left-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-full shadow-lg">
+                          🔥 Prévia
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {stage2 >= 1 && stage2 < 3 && <TypingBubble />}
+              {stage2 >= 3 && (
+                <Bubble delay={0}>
+                  To te mandando uma <strong>previa</strong> so pra voce ter
+                  uma ideia...
+                </Bubble>
+              )}
+
+              {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
+              {stage2 >= 5 && (
+                <Bubble delay={0}>
+                  Isso é só o que posso mostrar aqui fora. Lá dentro vai{" "}
+                  <strong>muito além</strong> — e fica só entre a gente.
+                </Bubble>
+              )}
+
+              {stage2 >= 5 && stage2 < 7 && <TypingBubble />}
+              {stage2 >= 7 && (
+                <Bubble delay={0}>
+                  Coisa que fica so entre a gente.
+                </Bubble>
+              )}
+
+              {stage2 >= 8 && (
+                <div
+                  className="mt-6"
+                  style={{
+                    animation:
+                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                  }}
+                >
+                  <div className="text-center mb-3 flex flex-col items-center gap-0.5">
+                    <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                      role pra baixo
+                    </span>
+                    <span
+                      className="text-primary text-lg leading-none"
+                      style={{ animation: "bounce-down 1.4s ease-in-out infinite" }}
+                    >
+                      ↓
+                    </span>
+                  </div>
                   <CtaButton delay={0} onClick={() => setStep(3)}>
                     LIBERAR MEU ACESSO 🔥
                   </CtaButton>
                 </div>
               )}
-            </div>
+            </>
           )}
 
           {/* ETAPA 3 */}
           {step === 3 && (
-            <div className="flex-1 flex flex-col">
+            <>
               <button
                 onClick={() => setStep(2)}
-                className="text-xs text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition self-start"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
 
               <div
-                className="text-center mb-3"
+                className="text-center mb-5"
                 style={{
                   animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                 }}
               >
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-3 py-0.5 rounded-full mb-2">
+                <span className="inline-block text-[11px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-3 py-1 rounded-full mb-3">
                   Acesso Liberado
                 </span>
-                <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
-                  🔥 Escolhe seu acesso —{" "}
+                <h2 className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                  🔥 Escolhe seu acesso agora —{" "}
                   <span className="text-gradient">
-                    preço não dura
+                    esse preco nao vai durar
                   </span>
                 </h2>
-                <p className="mt-1.5 text-[11px] font-semibold text-primary">
+                <p className="text-sm text-muted-foreground mt-2">
+                  Toca no plano e{" "}
+                  <strong className="text-foreground">ja acessa tudo</strong>.
+                </p>
+                <p className="mt-2 text-[13px] font-semibold text-primary">
                   Você vai entrar no 🔥 Club Proibido - Hotflix
                 </p>
               </div>
 
               {stage3 >= 1 && (
                 <div
-                  className="space-y-2.5"
+                  className="space-y-3"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
@@ -290,12 +306,12 @@ export function ChatScreen() {
               {stage3 >= 2 && (
                 <UrgencyNotice />
               )}
-            </div>
+            </>
           )}
 
           {/* ETAPA 4 */}
           {step === 4 && (
-            <div className="flex-1 flex flex-col">
+            <>
               <OrderBumpScreen
                 plan={selectedPlan}
                 onBack={() => setStep(3)}
@@ -304,15 +320,15 @@ export function ChatScreen() {
                   setStep(5);
                 }}
               />
-            </div>
+            </>
           )}
 
           {/* ETAPA 5 — PIX */}
           {step === 5 && (
-            <div className="flex-1 flex flex-col">
+            <>
               <button
                 onClick={() => setStep(4)}
-                className="text-xs text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition self-start"
+                className="text-xs text-muted-foreground hover:text-primary mb-4 inline-flex items-center gap-1 py-1.5 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -322,19 +338,19 @@ export function ChatScreen() {
                 onPaid={() => setStep(6)}
               />
 
-              <div className="mt-3 rounded-2xl bg-destructive/10 border border-destructive/40 px-3 py-2 text-center">
-                <p className="text-[12px] text-foreground font-medium leading-snug">
+              <div className="mt-5 rounded-2xl bg-destructive/10 border border-destructive/40 px-4 py-3 text-center">
+                <p className="text-[13px] text-foreground font-medium leading-snug">
                   🚨 Promoção ativa{" "}
                   <strong className="text-primary">só agora</strong>. Se sair
                   da página pode perder.
                 </p>
               </div>
-            </div>
+            </>
           )}
 
           {/* ETAPA 6 — Sucesso */}
           {step === 6 && (
-            <div className="pt-1 flex-1 flex flex-col">
+            <div className="pt-2">
               <PaymentSuccess
                 telegramUrl={VIP_ACCESS_URL}
                 planTitle={selectedPlan.title}
@@ -358,15 +374,15 @@ function UrgencyNotice() {
   const ss = String(seconds % 60).padStart(2, "0");
   return (
     <div
-      className="mt-3 rounded-xl bg-destructive/20 border border-destructive/50 px-3 py-2 text-center"
+      className="mt-5 rounded-2xl bg-destructive/20 border border-destructive/50 px-4 py-3 text-center"
       style={{
         animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
       }}
     >
-      <p className="text-[12px] text-white font-semibold leading-snug">
-        🚨 Preço promocional por tempo limitado.
+      <p className="text-[13px] text-white font-semibold leading-snug">
+        🚨 Preco promocional por tempo limitado. Pode subir a qualquer momento.
       </p>
-      <p className="mt-0.5 font-mono text-base font-extrabold text-destructive tabular-nums">
+      <p className="mt-1.5 font-mono text-base font-extrabold text-destructive tabular-nums">
         {mm}:{ss}
       </p>
     </div>
