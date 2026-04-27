@@ -340,14 +340,6 @@ export function ChatScreen() {
                 withBump={withBump}
                 onPaid={() => setStep(6)}
               />
-
-              <div className="mt-3 rounded-2xl bg-destructive/10 border border-destructive/40 px-3 py-2 text-center">
-                <p className="text-[12px] text-foreground font-medium leading-snug">
-                  🚨 Promoção ativa{" "}
-                  <strong className="text-primary">só agora</strong>. Se sair
-                  da página pode perder.
-                </p>
-              </div>
             </>
           )}
 
