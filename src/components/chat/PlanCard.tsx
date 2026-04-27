@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 export interface Plan {
   id: string;
   title: string;
+  description?: string;
   price: string;
   oldPrice?: string;
   badge?: string;
@@ -52,6 +53,11 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
           <p className="font-bold text-foreground text-[15px] sm:text-base leading-tight pr-2">
             {plan.title}
           </p>
+          {plan.description && (
+            <p className="text-[11px] text-muted-foreground mt-1 leading-snug pr-2">
+              {plan.description}
+            </p>
+          )}
           <div className="flex items-baseline gap-2 mt-1.5">
             {plan.oldPrice && (
               <span className="text-xs text-muted-foreground line-through">
