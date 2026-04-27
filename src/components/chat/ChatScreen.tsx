@@ -29,18 +29,19 @@ const PLANS: Plan[] = [
     oldPrice: "R$ 29,90",
   },
   {
-    id: "week",
-    title: "🟢 1 SEMANA 🟢",
-    price: "R$ 6,90",
-    oldPrice: "R$ 19,90",
-  },
-  {
     id: "videocall",
     title: "📹 CHAMADA DE VÍDEO",
+    description: "30 minutos ao vivo comigo, só você e eu",
     price: "R$ 22,90",
     oldPrice: "R$ 79,90",
     badge: "EXCLUSIVO 😈",
     highlight: true,
+  },
+  {
+    id: "week",
+    title: "🟢 1 SEMANA 🟢",
+    price: "R$ 6,90",
+    oldPrice: "R$ 19,90",
   },
 ];
 
@@ -103,6 +104,9 @@ export function ChatScreen() {
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
+              <p className="text-center text-[12px] text-muted-foreground mb-3">
+                Área privada da Letícia • Acesso exclusivo
+              </p>
               <div className="text-center mb-3">
                 <span className="text-[11px] text-muted-foreground bg-secondary/60 px-3 py-1 rounded-full">
                   hoje
@@ -144,6 +148,9 @@ export function ChatScreen() {
                     <CtaButton delay={0} onClick={() => setStep(2)}>
                       QUERO VER 🔥
                     </CtaButton>
+                    <p className="mt-2 text-[11px] text-muted-foreground">
+                      Grátis pra ver • Sem cadastro
+                    </p>
                   </div>
                 </div>
               )}
@@ -199,9 +206,8 @@ export function ChatScreen() {
               {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
               {stage2 >= 5 && (
                 <Bubble delay={0}>
-                  Isso e so o comeco. La dentro tem mais de{" "}
-                  <strong>500 fotos e videos</strong> que eu nunca postei em
-                  lugar nenhum.
+                  Isso é só o que posso mostrar aqui fora. Lá dentro vai{" "}
+                  <strong>muito além</strong> — e fica só entre a gente.
                 </Bubble>
               )}
 
@@ -220,6 +226,17 @@ export function ChatScreen() {
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
+                  <div className="text-center mb-3 flex flex-col items-center gap-0.5">
+                    <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                      role pra baixo
+                    </span>
+                    <span
+                      className="text-primary text-lg leading-none"
+                      style={{ animation: "bounce-down 1.4s ease-in-out infinite" }}
+                    >
+                      ↓
+                    </span>
+                  </div>
                   <CtaButton delay={0} onClick={() => setStep(3)}>
                     LIBERAR MEU ACESSO 🔥
                   </CtaButton>
@@ -256,6 +273,9 @@ export function ChatScreen() {
                 <p className="text-sm text-muted-foreground mt-2">
                   Toca no plano e{" "}
                   <strong className="text-foreground">ja acessa tudo</strong>.
+                </p>
+                <p className="mt-2 text-[12px] font-semibold text-primary">
+                  Você vai entrar no 🔥 Club Proibido - Hotflix
                 </p>
               </div>
 
