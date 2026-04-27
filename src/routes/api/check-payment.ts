@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/check-payment")({
             if (clientId && clientSecret) {
               try {
                 const authRes = await fetch(
-                  "https://app.syncpayments.com.br/api/partner/v1/auth-token",
+                  "https://api.syncpayments.com.br/api/partner/v1/auth-token",
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/check-payment")({
                 const token = authData.access_token;
                 if (token) {
                   const spRes = await fetch(
-                    `https://app.syncpayments.com.br/api/partner/v1/cash-in/${order.winnpay_transaction_id}`,
+                    `https://api.syncpayments.com.br/api/partner/v1/cash-in/${order.winnpay_transaction_id}`,
                     { headers: { Authorization: `Bearer ${token}` } },
                   );
                   const payment = await spRes.json().catch(() => ({}) as any);

@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 async function getToken(): Promise<string> {
-  const res = await fetch("https://app.syncpayments.com.br/api/partner/v1/auth-token", {
+  const res = await fetch("https://api.syncpayments.com.br/api/partner/v1/auth-token", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -31,7 +31,7 @@ serve(async (req) => {
 
     const token = await getToken();
 
-    const response = await fetch("https://app.syncpayments.com.br/api/partner/v1/cash-in", {
+    const response = await fetch("https://api.syncpayments.com.br/api/partner/v1/cash-in", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

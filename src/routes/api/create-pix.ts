@@ -108,7 +108,7 @@ export const Route = createFileRoute("/api/create-pix")({
           let token: string | undefined;
           try {
             const authRes = await fetch(
-              "https://app.syncpayments.com.br/api/partner/v1/auth-token",
+              "https://api.syncpayments.com.br/api/partner/v1/auth-token",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -143,7 +143,7 @@ export const Route = createFileRoute("/api/create-pix")({
           let spRes: Response;
           try {
             spRes = await fetch(
-              "https://app.syncpayments.com.br/api/partner/v1/cash-in",
+              "https://api.syncpayments.com.br/api/partner/v1/cash-in",
               {
                 method: "POST",
                 headers: {
