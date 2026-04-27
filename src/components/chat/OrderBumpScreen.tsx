@@ -40,27 +40,28 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
 
   return (
     <div
-      className="space-y-5 px-1 pb-2"
+      className="space-y-4 px-0.5 pb-[calc(7.5rem+env(safe-area-inset-bottom))]"
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <button
         onClick={onBack}
-        className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1"
+        className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 py-1 -ml-1"
       >
         ← trocar plano
       </button>
 
       {/* Header */}
       <div className="text-center">
-        <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-destructive/20 text-destructive px-3 py-1 rounded-full mb-3 animate-pulse-glow">
-          ⚠️ Ultima chance · expira em {mm}:{ss}
+        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-destructive/20 text-destructive px-3 py-1.5 rounded-full mb-3">
+          <span className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />
+          Ultima chance · expira em <span className="tabular-nums">{mm}:{ss}</span>
         </span>
-        <h2 className="text-[22px] sm:text-[24px] leading-tight font-extrabold text-foreground">
-          Antes de voce entrar...{" "}
+        <h2 className="text-[21px] sm:text-[24px] leading-[1.15] font-extrabold text-foreground px-1">
+          Espera amor...{" "}
           <span className="text-gradient">tenho algo so pra voce</span> 😈
         </h2>
-        <p className="text-sm text-muted-foreground mt-2 leading-snug">
-          Libero isso uma unica vez. Se sair, nao volta.
+        <p className="text-[13px] text-muted-foreground mt-2 leading-snug">
+          Libero isso <strong className="text-foreground">uma unica vez</strong>. Se sair, nao volta.
         </p>
       </div>
 
@@ -68,21 +69,21 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
       <button
         type="button"
         onClick={() => setWithBump((v) => !v)}
-        className={`w-full text-left rounded-3xl p-5 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.99] ${
+        className={`w-full text-left rounded-3xl p-4 sm:p-5 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.99] ${
           withBump
             ? "border-primary bg-gradient-to-br from-primary/20 via-card to-card neon-glow"
             : "border-border bg-card"
         }`}
       >
-        <div className="absolute -top-px right-4">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-b-lg bg-gradient-to-r from-destructive to-primary text-white shadow-lg">
+        <div className="absolute -top-px right-3 sm:right-4">
+          <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider px-2 sm:px-2.5 py-1 rounded-b-lg bg-gradient-to-r from-destructive to-primary text-white shadow-lg">
             🔥 83% OFF · SÓ HOJE
           </span>
         </div>
 
-        <div className="flex items-start gap-3 mt-3">
+        <div className="flex items-start gap-3 mt-4">
           <div
-            className={`shrink-0 mt-1 h-6 w-6 rounded-md border-2 flex items-center justify-center transition ${
+            className={`shrink-0 mt-0.5 h-7 w-7 rounded-lg border-2 flex items-center justify-center transition ${
               withBump
                 ? "bg-gradient-to-br from-primary to-primary-glow border-primary text-primary-foreground"
                 : "border-muted-foreground/40 bg-transparent"
@@ -94,7 +95,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="3"
-                className="h-4 w-4"
+                className="h-4.5 w-4.5"
               >
                 <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -105,10 +106,10 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
             <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
               SIM, adicionar ao meu pedido
             </p>
-            <h3 className="text-[18px] font-extrabold text-foreground leading-tight mt-0.5">
+            <h3 className="text-[17px] sm:text-[18px] font-extrabold text-foreground leading-tight mt-0.5">
               🎁 Pack Secreto da Leticia
             </h3>
-            <p className="text-[13px] text-muted-foreground mt-1.5 leading-snug">
+            <p className="text-[12.5px] text-muted-foreground mt-1.5 leading-snug">
               Meus videos mais ousados que eu{" "}
               <strong className="text-foreground">
                 nunca postei em grupo nenhum
@@ -124,22 +125,22 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
               ].map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-2 text-[12px] text-foreground/90"
+                  className="flex items-start gap-2 text-[12.5px] text-foreground/90"
                 >
-                  <span className="text-online mt-0.5">✓</span>
-                  <span>{b}</span>
+                  <span className="text-online mt-0.5 shrink-0">✓</span>
+                  <span className="leading-snug">{b}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="flex items-baseline gap-2 mt-3">
+            <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-3">
               <span className="text-xs text-muted-foreground line-through">
                 R$ 23,90
               </span>
-              <span className="text-2xl font-extrabold text-gradient">
+              <span className="text-[22px] sm:text-2xl font-extrabold text-gradient">
                 + {formatBRL(BUMP_PRICE_CENTS)}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground w-full sm:w-auto">
                 no mesmo Pix
               </span>
             </div>
@@ -148,7 +149,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
       </button>
 
       {/* Resumo do pedido */}
-      <div className="rounded-2xl bg-card border border-border p-4 space-y-2.5">
+      <div className="rounded-2xl bg-card/80 border border-border p-4 space-y-2.5 backdrop-blur-sm">
         <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           Resumo do pedido
         </p>
@@ -175,24 +176,9 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
           <span className="text-[13px] text-muted-foreground font-semibold">
             Total via Pix
           </span>
-          <span className="text-2xl font-extrabold text-gradient tabular-nums">
+          <span className="text-[26px] font-extrabold text-gradient tabular-nums">
             {formatBRL(totalCents)}
           </span>
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div className="space-y-2.5">
-        <CtaButton onClick={() => onConfirm(withBump)}>
-          {withBump ? "GERAR PIX COM BONUS 🔥" : "GERAR PIX AGORA 🔥"}
-        </CtaButton>
-
-        <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-1">🔒 Pix seguro</span>
-          <span>·</span>
-          <span>Acesso automático</span>
-          <span>·</span>
-          <span>100% sigiloso</span>
         </div>
       </div>
 
@@ -203,6 +189,27 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
           <strong className="text-primary">Pack Secreto junto</strong>. Nao e a
           toa.
         </p>
+      </div>
+
+      {/* Sticky CTA — última chamada fixa no mobile */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-30 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-background via-background/95 to-background/0 backdrop-blur-md"
+        style={{ animation: "message-in 0.4s ease both" }}
+      >
+        <div className="mx-auto w-full max-w-md sm:max-w-lg">
+          <CtaButton onClick={() => onConfirm(withBump)}>
+            {withBump
+              ? `PAGAR ${formatBRL(totalCents)} COM BONUS 🔥`
+              : `PAGAR ${formatBRL(totalCents)} AGORA 🔥`}
+          </CtaButton>
+          <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-muted-foreground">
+            <span>🔒 Pix seguro</span>
+            <span>·</span>
+            <span>Liberação automática</span>
+            <span>·</span>
+            <span>100% sigiloso</span>
+          </div>
+        </div>
       </div>
     </div>
   );
