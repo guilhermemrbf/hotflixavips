@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   telegramUrl: string;
@@ -10,6 +11,9 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
   const [countdown, setCountdown] = useState(15 * 60); // 15 min
   const [upsellDismissed, setUpsellDismissed] = useState(false);
   const [upsellLoading, setUpsellLoading] = useState(false);
+  const [bumpPix, setBumpPix] = useState<string | null>(null);
+  const [bumpCopied, setBumpCopied] = useState(false);
+  const [bumpError, setBumpError] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
@@ -35,26 +39,40 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
 
   const handleUpsellBuy = async () => {
     setUpsellLoading(true);
+    setBumpError(null);
     try {
       const res = await fetch("/api/create-pix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: "bump", utms: {}, bump: true }),
+        body: JSON.stringify({ plan_id: "bump", utms: {} }),
       });
       const data = await res.json();
       if (data?.pix_copy_paste) {
-        await navigator.clipboard.writeText(data.pix_copy_paste).catch(() => {});
-        alert(
-          "Codigo Pix do bonus copiado! Cole no app do seu banco pra finalizar R$ 3,90."
-        );
+        setBumpPix(data.pix_copy_paste as string);
       } else {
-        alert("Nao foi possivel gerar o bonus agora. Tenta novamente.");
+        setBumpError("Nao foi possivel gerar o bonus agora. Tenta novamente.");
       }
     } catch {
-      alert("Erro ao gerar o bonus. Tenta novamente.");
+      setBumpError("Erro ao gerar o bonus. Tenta novamente.");
     } finally {
       setUpsellLoading(false);
     }
+  };
+
+  const handleBumpCopy = async () => {
+    if (!bumpPix) return;
+    try {
+      await navigator.clipboard.writeText(bumpPix);
+      setBumpCopied(true);
+      setTimeout(() => setBumpCopied(false), 2000);
+    } catch {
+      /* noop */
+    }
+  };
+
+  const handleDismissUpsell = () => {
+    setUpsellDismissed(true);
+    handleOpen();
   };
 
   return (
@@ -191,21 +209,52 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
               <strong className="text-primary">R$ 3,90</strong>. Nao vai
               aparecer de novo depois que voce sair.
             </p>
-            <button
-              onClick={handleUpsellBuy}
-              disabled={upsellLoading}
-              className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
-            >
-              {upsellLoading
-                ? "Gerando Pix do bonus…"
-                : "QUERO O BONUS — R$ 3,90 SO AGORA"}
-            </button>
-            <button
-              onClick={() => setUpsellDismissed(true)}
-              className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
-            >
-              Nao, vou entrar sem o bonus
-            </button>
+
+            {!bumpPix ? (
+              <>
+                <button
+                  onClick={handleUpsellBuy}
+                  disabled={upsellLoading}
+                  className="mt-3 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft neon-glow active:scale-[0.98] transition disabled:opacity-60"
+                >
+                  {upsellLoading
+                    ? "Gerando Pix do bonus…"
+                    : "QUERO O BONUS — R$ 3,90 SO AGORA"}
+                </button>
+                {bumpError && (
+                  <p className="mt-2 text-[11px] text-destructive text-center">
+                    {bumpError}
+                  </p>
+                )}
+                <button
+                  onClick={handleDismissUpsell}
+                  className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+                >
+                  Nao, vou entrar sem o bonus
+                </button>
+              </>
+            ) : (
+              <div className="mt-4 flex flex-col items-center gap-3">
+                <p className="text-[12px] text-foreground text-center font-semibold">
+                  Pague R$ 3,90 via Pix pra liberar o Pack Secreto:
+                </p>
+                <div className="bg-white p-3 rounded-xl">
+                  <QRCodeSVG value={bumpPix} size={160} />
+                </div>
+                <button
+                  onClick={handleBumpCopy}
+                  className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-4 py-3 text-sm font-extrabold uppercase tracking-wide shadow-soft active:scale-[0.98] transition"
+                >
+                  {bumpCopied ? "✅ Codigo copiado" : "Copiar codigo Pix"}
+                </button>
+                <button
+                  onClick={handleDismissUpsell}
+                  className="w-full text-center text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
+                >
+                  Ja paguei — entrar no canal
+                </button>
+              </div>
+            )}
           </div>
         )}
 

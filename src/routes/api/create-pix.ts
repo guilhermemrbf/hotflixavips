@@ -13,6 +13,7 @@ const PLANS: Record<string, { title: string; cents: number }> = {
   bonus: { title: "💎 VITALÍCIO + BÔNUS 🎁", cents: 890 },
   week: { title: "🟢 1 SEMANA 🟢", cents: 690 },
   videocall: { title: "📹 CHAMADA DE VÍDEO", cents: 2290 },
+  bump: { title: "🎁 PACK SECRETO BONUS", cents: 390 },
 };
 
 const ORDER_BUMP = {
