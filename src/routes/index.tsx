@@ -1,26 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ChatScreen } from "@/components/chat/ChatScreen";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Letícia VIP — Área Privada 🔥" },
+      {
+        name: "description",
+        content:
+          "Conteúdo exclusivo só pra quem veio do Insta. Acesso VIP imediato via Pix.",
+      },
+      { property: "og:title", content: "Letícia VIP — Área Privada 🔥" },
+      {
+        property: "og:description",
+        content:
+          "Vídeos exclusivos, bastidores e conteúdos que não vão pro Instagram.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return <ChatScreen />;
 }
