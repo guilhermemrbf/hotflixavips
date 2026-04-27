@@ -46,7 +46,6 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
     // atributo HTML (não só prop) — alguns browsers olham o atributo
     v.setAttribute("muted", "");
     v.setAttribute("playsinline", "");
-    // @ts-expect-error — webkit-only
     v.setAttribute("webkit-playsinline", "");
 
     const tryPlay = async () => {
@@ -191,9 +190,10 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
               controls={false}
               controlsList="nodownload noplaybackrate nofullscreen"
               disablePictureInPicture
-              // @ts-expect-error — atributo legado necessário pra iOS antigo
-              webkit-playsinline="true"
-              x5-playsinline="true"
+              {...({
+                "webkit-playsinline": "true",
+                "x5-playsinline": "true",
+              } as Record<string, string>)}
             />
 
             {/* Spinner leve só enquanto o vídeo não tá pronto */}
