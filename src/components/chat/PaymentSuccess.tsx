@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   telegramUrl: string;
@@ -10,6 +11,9 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
   const [countdown, setCountdown] = useState(15 * 60); // 15 min
   const [upsellDismissed, setUpsellDismissed] = useState(false);
   const [upsellLoading, setUpsellLoading] = useState(false);
+  const [bumpPix, setBumpPix] = useState<string | null>(null);
+  const [bumpCopied, setBumpCopied] = useState(false);
+  const [bumpError, setBumpError] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setCountdown((c) => (c > 0 ? c - 1 : 0)), 1000);
@@ -35,26 +39,40 @@ export function PaymentSuccess({ telegramUrl, planTitle }: Props) {
 
   const handleUpsellBuy = async () => {
     setUpsellLoading(true);
+    setBumpError(null);
     try {
       const res = await fetch("/api/create-pix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: "bump", utms: {}, bump: true }),
+        body: JSON.stringify({ plan_id: "bump", utms: {} }),
       });
       const data = await res.json();
       if (data?.pix_copy_paste) {
-        await navigator.clipboard.writeText(data.pix_copy_paste).catch(() => {});
-        alert(
-          "Codigo Pix do bonus copiado! Cole no app do seu banco pra finalizar R$ 3,90."
-        );
+        setBumpPix(data.pix_copy_paste as string);
       } else {
-        alert("Nao foi possivel gerar o bonus agora. Tenta novamente.");
+        setBumpError("Nao foi possivel gerar o bonus agora. Tenta novamente.");
       }
     } catch {
-      alert("Erro ao gerar o bonus. Tenta novamente.");
+      setBumpError("Erro ao gerar o bonus. Tenta novamente.");
     } finally {
       setUpsellLoading(false);
     }
+  };
+
+  const handleBumpCopy = async () => {
+    if (!bumpPix) return;
+    try {
+      await navigator.clipboard.writeText(bumpPix);
+      setBumpCopied(true);
+      setTimeout(() => setBumpCopied(false), 2000);
+    } catch {
+      /* noop */
+    }
+  };
+
+  const handleDismissUpsell = () => {
+    setUpsellDismissed(true);
+    handleOpen();
   };
 
   return (
