@@ -65,8 +65,7 @@ export function ChatScreen() {
     link.rel = "preload";
     link.as = "video";
     link.href = "/vsl.mp4";
-    // @ts-expect-error fetchpriority é suportado mas não tipado
-    link.fetchPriority = "high";
+    link.setAttribute("fetchpriority", "high");
     document.head.appendChild(link);
     // Prefetch do poster também
     const img = new Image();
