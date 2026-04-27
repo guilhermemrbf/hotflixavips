@@ -29,7 +29,7 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
         animationDelay: `${delay}ms`,
       }}
       className={cn(
-        "w-full text-left rounded-2xl p-4 sm:p-5 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.98]",
+        "w-full text-left rounded-2xl p-3 sm:p-4 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.98]",
         isHighlight
           ? "border-primary bg-gradient-to-br from-primary/15 via-card to-card neon-glow"
           : selected
@@ -48,25 +48,25 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
         </span>
       )}
 
-      <div className="flex items-center gap-3 mt-1">
+      <div className="flex items-center gap-2.5 mt-0.5">
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-foreground text-[15px] sm:text-base leading-tight pr-2">
+          <p className="font-bold text-foreground text-[13.5px] sm:text-[15px] leading-tight pr-2">
             {plan.title}
           </p>
           {plan.description && (
-            <p className="text-[11px] text-muted-foreground mt-1 leading-snug pr-2">
+            <p className="text-[10.5px] text-muted-foreground mt-0.5 leading-snug pr-2">
               {plan.description}
             </p>
           )}
-          <div className="flex items-baseline gap-2 mt-1.5">
+          <div className="flex items-baseline gap-2 mt-1">
             {plan.oldPrice && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className="text-[11px] text-muted-foreground line-through">
                 {plan.oldPrice}
               </span>
             )}
             <span
               className={cn(
-                "font-extrabold text-xl sm:text-2xl",
+                "font-extrabold text-lg sm:text-2xl",
                 isHighlight ? "text-gradient" : "text-foreground"
               )}
             >
@@ -77,13 +77,13 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
 
         <div
           className={cn(
-            "shrink-0 h-10 w-10 rounded-full flex items-center justify-center transition",
+            "shrink-0 h-9 w-9 rounded-full flex items-center justify-center transition",
             isHighlight
               ? "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-lg animate-pulse-glow"
               : "bg-secondary text-foreground border border-border"
           )}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4.5 w-4.5" />
         </div>
       </div>
     </button>

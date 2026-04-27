@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { CtaButton } from "./CtaButton";
-import { Bubble } from "./Bubble";
 
 interface Props {
   onContinue: () => void;
@@ -99,22 +98,12 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
 
   return (
     <div
-      className="pt-1"
+      className="pt-0.5"
       style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
     >
-      <div className="text-center mb-3">
-        <span className="text-[11px] text-muted-foreground bg-secondary/60 px-3 py-1 rounded-full">
-          agora
-        </span>
-      </div>
-
-      <Bubble delay={0}>
-        Antes de te mostrar... preciso te falar uma coisa
-      </Bubble>
-
       {/* Player 9:16 */}
-      <div className="mt-4 flex justify-center">
-        <div className="w-full max-w-[320px] sm:max-w-[360px] mx-auto">
+      <div className="flex justify-center">
+        <div className="w-full max-w-[240px] sm:max-w-[280px] mx-auto">
           <div className="relative w-full aspect-[9/16] rounded-[1.5rem] overflow-hidden border-2 border-primary/40 bg-black neon-glow">
             <video
               ref={videoRef}
@@ -190,7 +179,7 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
       </div>
 
       {/* CTA ou hint */}
-      <div className="mt-5 min-h-[72px]">
+      <div className="mt-3 min-h-[64px]">
         {revealed ? (
           <div
             className="text-center"
@@ -199,12 +188,12 @@ export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
             <CtaButton onClick={onContinue}>
               QUERO VER O QUE TEM LÁ DENTRO 🔥
             </CtaButton>
-            <p className="mt-2 text-[11px] text-muted-foreground">
+            <p className="mt-1.5 text-[11px] text-muted-foreground">
               Continua assistindo se quiser • só toca pra avançar
             </p>
           </div>
         ) : (
-          <p className="text-center text-[12px] text-muted-foreground">
+          <p className="text-center text-[11.5px] text-muted-foreground">
             assista para continuar...
           </p>
         )}
