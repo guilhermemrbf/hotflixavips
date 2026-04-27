@@ -6,6 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   plan: Plan;
+  withBump?: boolean;
   onPaid: () => void;
 }
 
@@ -18,14 +19,14 @@ interface PixData {
   expires_at: string;
 }
 
-export function PixDirect({ plan, onPaid }: Props) {
+export function PixDirect({ plan, withBump = false, onPaid }: Props) {
   const [loading, setLoading] = useState(true);
   const [pix, setPix] = useState<PixData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(599);
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(false);
-  const bump = false;
+  const bump = withBump;
   // Guard contra double-invoke do StrictMode / re-render
   const createdForPlanRef = useRef<string | null>(null);
 
