@@ -10,11 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiCreatePixRouteImport } from './routes/api/create-pix'
 import { Route as ApiCheckPaymentRouteImport } from './routes/api/check-payment'
+import { Route as ApiPublicUtmifyTestRouteImport } from './routes/api/public/utmify-test'
+import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreatePixRoute = ApiCreatePixRouteImport.update({
+  id: '/api/create-pix',
+  path: '/api/create-pix',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCheckPaymentRoute = ApiCheckPaymentRouteImport.update({
@@ -22,31 +30,69 @@ const ApiCheckPaymentRoute = ApiCheckPaymentRouteImport.update({
   path: '/api/check-payment',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicUtmifyTestRoute = ApiPublicUtmifyTestRouteImport.update({
+  id: '/api/public/utmify-test',
+  path: '/api/public/utmify-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
+  id: '/api/public/mp-webhook',
+  path: '/api/public/mp-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
+  '/api/create-pix': typeof ApiCreatePixRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
+  '/api/create-pix': typeof ApiCreatePixRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/check-payment': typeof ApiCheckPaymentRoute
+  '/api/create-pix': typeof ApiCreatePixRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
+  '/api/public/utmify-test': typeof ApiPublicUtmifyTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/check-payment'
+  fullPaths:
+    | '/'
+    | '/api/check-payment'
+    | '/api/create-pix'
+    | '/api/public/mp-webhook'
+    | '/api/public/utmify-test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/check-payment'
-  id: '__root__' | '/' | '/api/check-payment'
+  to:
+    | '/'
+    | '/api/check-payment'
+    | '/api/create-pix'
+    | '/api/public/mp-webhook'
+    | '/api/public/utmify-test'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/check-payment'
+    | '/api/create-pix'
+    | '/api/public/mp-webhook'
+    | '/api/public/utmify-test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiCheckPaymentRoute: typeof ApiCheckPaymentRoute
+  ApiCreatePixRoute: typeof ApiCreatePixRoute
+  ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
+  ApiPublicUtmifyTestRoute: typeof ApiPublicUtmifyTestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +104,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/create-pix': {
+      id: '/api/create-pix'
+      path: '/api/create-pix'
+      fullPath: '/api/create-pix'
+      preLoaderRoute: typeof ApiCreatePixRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/check-payment': {
       id: '/api/check-payment'
       path: '/api/check-payment'
       fullPath: '/api/check-payment'
       preLoaderRoute: typeof ApiCheckPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/utmify-test': {
+      id: '/api/public/utmify-test'
+      path: '/api/public/utmify-test'
+      fullPath: '/api/public/utmify-test'
+      preLoaderRoute: typeof ApiPublicUtmifyTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mp-webhook': {
+      id: '/api/public/mp-webhook'
+      path: '/api/public/mp-webhook'
+      fullPath: '/api/public/mp-webhook'
+      preLoaderRoute: typeof ApiPublicMpWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -71,6 +138,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiCheckPaymentRoute: ApiCheckPaymentRoute,
+  ApiCreatePixRoute: ApiCreatePixRoute,
+  ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
+  ApiPublicUtmifyTestRoute: ApiPublicUtmifyTestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
