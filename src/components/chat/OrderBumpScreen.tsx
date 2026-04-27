@@ -135,7 +135,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
               SIM, adicionar ao meu pedido
             </p>
             <h3 className="text-[17px] sm:text-[18px] font-extrabold text-foreground leading-tight mt-0.5">
-              🎁 Pack Secreto da Leticia
+              🎁 Pack Secreto • Hotflix
             </h3>
             <p className="text-[12.5px] text-muted-foreground mt-1.5 leading-snug">
               Meus videos mais ousados que eu{" "}

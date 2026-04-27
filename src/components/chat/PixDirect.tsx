@@ -179,7 +179,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
     >
       <div className="text-center">
         <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-3 py-1 rounded-full">
-          Pix gerado · {pix.plan_title}
+          Pix gerado · {pix.plan_title} · 🔥 Club Proibido - Hotflix
         </span>
         <h2 className="text-[20px] sm:text-xl font-extrabold text-foreground mt-3 leading-tight px-2">
           Falta <span className="text-gradient">1 passo</span> pra voce entrar
