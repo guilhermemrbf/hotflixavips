@@ -21,7 +21,9 @@ const PLANS: Plan[] = [
   },
   {
     id: "bonus",
-    title: "💎 VITALÍCIO + BÔNUS 🎁",
+    title: "💎 Vitalício + Pack Secreto",
+    description:
+      "Acesso vitalicio + pack bonus de videos exclusivos que eu nao libero pra todo mundo",
     price: "R$ 8,90",
     oldPrice: "R$ 29,90",
   },
@@ -108,16 +110,19 @@ export function ChatScreen() {
               {stage1 < 1 ? (
                 <TypingBubble />
               ) : (
-                <Bubble delay={0}>Oii amor 😘</Bubble>
+                <Bubble delay={0}>Oii... tava pensando em voce</Bubble>
               )}
               {stage1 >= 1 && stage1 < 2 && <TypingBubble />}
               {stage1 >= 2 && (
-                <Bubble delay={0}>Vi que você veio do meu Insta…</Bubble>
+                <Bubble delay={0}>
+                  Separei uma coisa especial so pra quem chegou aqui
+                </Bubble>
               )}
               {stage1 >= 2 && stage1 < 3 && <TypingBubble />}
               {stage1 >= 3 && (
                 <Bubble delay={0}>
-                  Separei um <strong>acesso privado</strong> pra você 👀
+                  Tenho um <strong>acesso privado</strong> esperando voce — coisa
+                  que eu nao mando pra qualquer um
                 </Bubble>
               )}
 
@@ -184,23 +189,24 @@ export function ChatScreen() {
               {stage2 >= 1 && stage2 < 3 && <TypingBubble />}
               {stage2 >= 3 && (
                 <Bubble delay={0}>
-                  Tô te mandando uma <strong>prévia</strong> só pra você ver 👀
+                  To te mandando uma <strong>previa</strong> so pra voce ter
+                  uma ideia...
                 </Bubble>
               )}
 
               {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
               {stage2 >= 5 && (
                 <Bubble delay={0}>
-                  Quer ver os conteúdos que eu <em>não posto</em> nas redes?{" "}
-                  <span className="text-primary">😈</span>
+                  Isso e so o comeco. La dentro tem mais de{" "}
+                  <strong>500 fotos e videos</strong> que eu nunca postei em
+                  lugar nenhum.
                 </Bubble>
               )}
 
               {stage2 >= 5 && stage2 < 7 && <TypingBubble />}
               {stage2 >= 7 && (
                 <Bubble delay={0}>
-                  Isso aí em cima é só uma <strong>pequena parte</strong> do
-                  que tem lá dentro 🔥
+                  Coisa que fica so entre a gente.
                 </Bubble>
               )}
 
@@ -240,12 +246,14 @@ export function ChatScreen() {
                   Acesso Liberado
                 </span>
                 <h2 className="text-[20px] sm:text-[22px] leading-tight font-extrabold text-foreground">
-                  🔥 Seu acesso está{" "}
-                  <span className="text-gradient">pronto pra liberar</span>
+                  🔥 Escolhe seu acesso agora —{" "}
+                  <span className="text-gradient">
+                    esse preco nao vai durar
+                  </span>
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">
                   Toca no plano e{" "}
-                  <strong className="text-foreground">já gera seu Pix</strong>.
+                  <strong className="text-foreground">ja acessa tudo</strong>.
                 </p>
               </div>
 
@@ -273,20 +281,7 @@ export function ChatScreen() {
               )}
 
               {stage3 >= 2 && (
-                <div
-                  className="mt-5 rounded-2xl bg-destructive/10 border border-destructive/40 px-4 py-3 text-center"
-                  style={{
-                    animation:
-                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-                  }}
-                >
-                  <p className="text-[13px] text-foreground font-medium leading-snug">
-                    🚨 Escolha seu acesso agora.{" "}
-                    <strong className="text-primary">
-                      Valores promocionais por tempo limitado.
-                    </strong>
-                  </p>
-                </div>
+                <UrgencyNotice />
               )}
             </>
           )}
@@ -324,6 +319,31 @@ export function ChatScreen() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function UrgencyNotice() {
+  const [seconds, setSeconds] = useState(15 * 60);
+  useEffect(() => {
+    const t = setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  return (
+    <div
+      className="mt-5 rounded-2xl bg-destructive/20 border border-destructive/50 px-4 py-3 text-center"
+      style={{
+        animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+      }}
+    >
+      <p className="text-[13px] text-white font-semibold leading-snug">
+        🚨 Preco promocional por tempo limitado. Pode subir a qualquer momento.
+      </p>
+      <p className="mt-1.5 font-mono text-base font-extrabold text-destructive tabular-nums">
+        {mm}:{ss}
+      </p>
     </div>
   );
 }
