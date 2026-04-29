@@ -187,37 +187,56 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
       </div>
 
       {/* Faixa de comentários animados — prova social compacta */}
-      <div className="relative overflow-hidden rounded-xl bg-card/50 border border-border py-1.5">
+      <div className="relative overflow-hidden rounded-2xl bg-card/60 border border-border py-2">
+        <div className="flex items-center justify-between px-3 pb-1.5">
+          <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-online">
+            <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse-ring" />
+            ao vivo · pagando agora
+          </span>
+          <span className="text-[10px] text-muted-foreground tabular-nums">+128 hoje</span>
+        </div>
         <div
-          className="flex gap-2 whitespace-nowrap w-max"
-          style={{ animation: "marquee-left 38s linear infinite" }}
+          className="flex gap-2.5 whitespace-nowrap w-max"
+          style={{ animation: "marquee-left 42s linear infinite" }}
         >
           {(() => {
             const items = [
-              { n: "Carlos M.", t: "Caiu na hora, já tô dentro 🔥" },
-              { n: "Rafa", t: "Liberou em 3s, surreal 😱" },
-              { n: "Bruno", t: "Paguei e já entrei no grupo ✅" },
-              { n: "Diego", t: "Vale demais o valor 🔥🔥" },
-              { n: "Lucas", t: "Funcionou de primeira 👏" },
-              { n: "Pedro", t: "Conteúdo absurdo, recomendo 💯" },
-              { n: "Thiago", t: "Pix automático mesmo, sensacional" },
-              { n: "Mateus", t: "Tava com medo mas é real ✅" },
+              { n: "Carlos M.", t: "Caiu na hora, já tô dentro 🔥", a: "C", c: "from-blue-500 to-indigo-600", w: "há 12s" },
+              { n: "Rafael S.", t: "Liberou em 3 segundos, surreal 😱", a: "R", c: "from-pink-500 to-rose-600", w: "há 38s" },
+              { n: "Bruno A.", t: "Paguei e já entrei no grupo ✅", a: "B", c: "from-emerald-500 to-teal-600", w: "há 1min" },
+              { n: "Diego P.", t: "Vale cada centavo, conteúdo TOP 🔥🔥", a: "D", c: "from-amber-500 to-orange-600", w: "há 2min" },
+              { n: "Lucas F.", t: "Funcionou de primeira, recomendo 👏", a: "L", c: "from-violet-500 to-purple-600", w: "há 3min" },
+              { n: "Pedro H.", t: "Tô maluco com o que vi lá dentro 😈", a: "P", c: "from-cyan-500 to-blue-600", w: "há 4min" },
+              { n: "Thiago R.", t: "Pix automático mesmo, sensacional", a: "T", c: "from-fuchsia-500 to-pink-600", w: "há 5min" },
+              { n: "Mateus L.", t: "Tava com medo mas é real ✅", a: "M", c: "from-green-500 to-emerald-600", w: "há 6min" },
+              { n: "André V.", t: "Melhor R$ que gastei esse mês 💸", a: "A", c: "from-red-500 to-rose-600", w: "há 7min" },
+              { n: "Gabriel T.", t: "Acesso liberou sozinho, top demais", a: "G", c: "from-sky-500 to-cyan-600", w: "há 9min" },
             ];
             const loop = [...items, ...items];
             return loop.map((c, i) => (
-              <span
+              <div
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-full bg-bubble-her border border-online/30 px-2.5 py-1 text-[11px] text-foreground"
+                className="inline-flex items-center gap-2 rounded-2xl bg-bubble-her border border-online/25 pl-1.5 pr-3 py-1.5 text-[12.5px] text-foreground shadow-soft"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse-ring" />
-                <span className="font-semibold text-online/90">{c.n}:</span>
-                <span className="text-foreground/90">{c.t}</span>
-              </span>
+                <span
+                  className={`relative shrink-0 h-7 w-7 rounded-full bg-gradient-to-br ${c.c} flex items-center justify-center text-white font-bold text-[12px]`}
+                >
+                  {c.a}
+                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-online border-2 border-bubble-her" />
+                </span>
+                <span className="flex flex-col leading-tight">
+                  <span className="flex items-center gap-1.5">
+                    <span className="font-bold text-foreground text-[12.5px]">{c.n}</span>
+                    <span className="text-[9.5px] text-muted-foreground">· {c.w}</span>
+                  </span>
+                  <span className="text-foreground/85 text-[12px]">{c.t}</span>
+                </span>
+              </div>
             ));
           })()}
         </div>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
       </div>
 
       <div className="rounded-2xl bg-card border border-border p-3 text-center">
