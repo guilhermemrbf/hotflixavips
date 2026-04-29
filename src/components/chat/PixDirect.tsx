@@ -186,16 +186,38 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         </p>
       </div>
 
-      {/* Depoimento estilo print de chat — prova social antes do QR */}
-      <div className="flex justify-start">
-        <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-bubble-her border border-online/30 px-3 py-2 shadow-soft">
-          <p className="text-[12.5px] text-foreground leading-snug">
-            Caiu na hora, já tô dentro 🔥
-          </p>
-          <p className="text-[9.5px] text-muted-foreground mt-0.5">
-            — Carlos M. · agora
-          </p>
+      {/* Faixa de comentários animados — prova social compacta */}
+      <div className="relative overflow-hidden rounded-xl bg-card/50 border border-border py-1.5">
+        <div
+          className="flex gap-2 whitespace-nowrap w-max"
+          style={{ animation: "marquee-left 38s linear infinite" }}
+        >
+          {(() => {
+            const items = [
+              { n: "Carlos M.", t: "Caiu na hora, já tô dentro 🔥" },
+              { n: "Rafa", t: "Liberou em 3s, surreal 😱" },
+              { n: "Bruno", t: "Paguei e já entrei no grupo ✅" },
+              { n: "Diego", t: "Vale demais o valor 🔥🔥" },
+              { n: "Lucas", t: "Funcionou de primeira 👏" },
+              { n: "Pedro", t: "Conteúdo absurdo, recomendo 💯" },
+              { n: "Thiago", t: "Pix automático mesmo, sensacional" },
+              { n: "Mateus", t: "Tava com medo mas é real ✅" },
+            ];
+            const loop = [...items, ...items];
+            return loop.map((c, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1.5 rounded-full bg-bubble-her border border-online/30 px-2.5 py-1 text-[11px] text-foreground"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse-ring" />
+                <span className="font-semibold text-online/90">{c.n}:</span>
+                <span className="text-foreground/90">{c.t}</span>
+              </span>
+            ));
+          })()}
         </div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent" />
       </div>
 
       <div className="rounded-2xl bg-card border border-border p-3 text-center">
