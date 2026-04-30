@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { createTelegramInviteLink } from "@/integrations/telegram.server";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -76,12 +77,18 @@ export const Route = createFileRoute("/api/check-payment")({
 
           const { data: order } = await supabaseAdmin
             .from("orders")
-            .select("status, paid_at, winnpay_transaction_id")
+            .select(
+              "status, paid_at, winnpay_transaction_id, telegram_invite_link",
+            )
             .eq("id", order_id)
             .maybeSingle();
 
           if (!order) {
-            return json(200, { status: "not_found", paid_at: null });
+            return json(200, {
+              status: "not_found",
+              paid_at: null,
+              telegram_invite_link: null,
+            });
           }
 
           // Fallback ativo: se ainda está pending e temos tx id, consulta SyncPay
@@ -89,17 +96,39 @@ export const Route = createFileRoute("/api/check-payment")({
             const spStatus = await querySyncPay(order.winnpay_transaction_id);
             if (spStatus && PAID_STATUSES.has(spStatus)) {
               const paidAt = new Date().toISOString();
+              const inviteLink =
+                order.telegram_invite_link ??
+                (await createTelegramInviteLink(order_id));
               await supabaseAdmin
                 .from("orders")
-                .update({ status: "paid", paid_at: paidAt })
+                .update({
+                  status: "paid",
+                  paid_at: paidAt,
+                  telegram_invite_link: inviteLink,
+                })
                 .eq("id", order_id);
-              return json(200, { status: "paid", paid_at: paidAt });
+              return json(200, {
+                status: "paid",
+                paid_at: paidAt,
+                telegram_invite_link: inviteLink,
+              });
             }
+          }
+
+          // Se já está pago mas o link não foi gerado por algum motivo, gera agora
+          let inviteLink = order.telegram_invite_link ?? null;
+          if (order.status === "paid" && !inviteLink) {
+            inviteLink = await createTelegramInviteLink(order_id);
+            await supabaseAdmin
+              .from("orders")
+              .update({ telegram_invite_link: inviteLink })
+              .eq("id", order_id);
           }
 
           return json(200, {
             status: order.status,
             paid_at: order.paid_at,
+            telegram_invite_link: inviteLink,
           });
         } catch (e) {
           return json(500, { error: String(e) });

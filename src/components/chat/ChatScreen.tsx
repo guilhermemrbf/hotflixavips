@@ -76,6 +76,7 @@ export function ChatScreen() {
   const [stage1, setStage1] = useState(0);
   const [stage2, setStage2] = useState(0);
   const [stage3, setStage3] = useState(0);
+  const [vipLink, setVipLink] = useState<string>(VIP_ACCESS_URL);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Warm-up leve: apenas o poster e o chunk JS da VSL enquanto o usuário
@@ -362,7 +363,10 @@ export function ChatScreen() {
                 <PixDirect
                   plan={selectedPlan}
                   withBump={withBump}
-                  onPaid={() => setStep(6)}
+                  onPaid={(inviteLink) => {
+                    if (inviteLink) setVipLink(inviteLink);
+                    setStep(6);
+                  }}
                 />
               </Suspense>
             </>
@@ -373,7 +377,7 @@ export function ChatScreen() {
             <div className="pt-2">
               <Suspense fallback={<LazyFallback />}>
                 <PaymentSuccess
-                  telegramUrl={VIP_ACCESS_URL}
+                  telegramUrl={vipLink}
                   planTitle={selectedPlan.title}
                 />
                 <Testimonials />
