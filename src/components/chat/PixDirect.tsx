@@ -7,7 +7,7 @@ import { QRCodeSVG } from "qrcode.react";
 interface Props {
   plan: Plan;
   withBump?: boolean;
-  onPaid: () => void;
+  onPaid: (inviteLink?: string | null) => void;
 }
 
 interface PixData {
@@ -91,7 +91,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         const data = await res.json();
         if (data?.status === "paid") {
           clearInterval(t);
-          onPaid();
+          onPaid(data?.telegram_invite_link ?? null);
         }
       } catch {
         /* silencioso */
@@ -131,7 +131,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
         `/api/check-payment?order_id=${encodeURIComponent(pix.order_id)}`
       );
       const data = await res.json();
-      if (data?.status === "paid") onPaid();
+      if (data?.status === "paid") onPaid(data?.telegram_invite_link ?? null);
     } catch {
       /* ignore */
     } finally {
