@@ -31,6 +31,7 @@ export type Database = {
           raw_response: Json | null
           raw_webhook: Json | null
           status: string
+          telegram_invite_link: string | null
           updated_at: string
           utm_campaign: string | null
           utm_content: string | null
@@ -55,6 +56,7 @@ export type Database = {
           raw_response?: Json | null
           raw_webhook?: Json | null
           status?: string
+          telegram_invite_link?: string | null
           updated_at?: string
           utm_campaign?: string | null
           utm_content?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           raw_response?: Json | null
           raw_webhook?: Json | null
           status?: string
+          telegram_invite_link?: string | null
           updated_at?: string
           utm_campaign?: string | null
           utm_content?: string | null
