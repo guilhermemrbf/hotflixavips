@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendOrderToUtmify } from "@/integrations/utmify.server";
+import { createTelegramInviteLink } from "@/integrations/telegram.server";
 
 export const Route = createFileRoute("/api/public/syncpay-webhook")({
   server: {
@@ -98,12 +99,20 @@ export const Route = createFileRoute("/api/public/syncpay-webhook")({
           const newStatus = isPaid ? "paid" : "failed";
           const paidAt = isPaid ? new Date().toISOString() : order.paid_at;
 
+          // Se aprovou, gera link único de acesso ao canal VIP
+          let telegramInviteLink: string | null =
+            order.telegram_invite_link ?? null;
+          if (isPaid && !telegramInviteLink) {
+            telegramInviteLink = await createTelegramInviteLink(order.id);
+          }
+
           await supabaseAdmin
             .from("orders")
             .update({
               status: newStatus,
               paid_at: paidAt,
               raw_webhook: body,
+              telegram_invite_link: telegramInviteLink,
             })
             .eq("id", order.id);
 
