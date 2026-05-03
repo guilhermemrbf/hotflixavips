@@ -16,8 +16,7 @@ export function ChatHeader() {
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-semibold text-foreground tracking-tight flex items-center gap-1.5 text-[14px] sm:text-base leading-tight">
-            Letícia <span className="text-muted-foreground font-normal">•</span>{" "}
-            <span className="text-primary">Hotflix</span> 🔥
+            <span className="text-primary">Hotflix</span>🔥
           </h1>
           <p className="text-[11px] text-online flex items-center gap-1.5 leading-tight">
             <span className="h-1.5 w-1.5 rounded-full bg-online" />
