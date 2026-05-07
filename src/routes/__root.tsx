@@ -28,7 +28,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
       { title: "HOTFIX" },
       { name: "description", content: "A sales page for a VIP Telegram group with integrated PIX payments via SyncPay, processed directly on the page." },
       { name: "author", content: "Lovable" },
