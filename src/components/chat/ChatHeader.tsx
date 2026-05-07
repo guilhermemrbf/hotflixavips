@@ -3,7 +3,7 @@ import leticiaAvatar from "@/assets/leticia-avatar.webp";
 export function ChatHeader() {
   return (
     <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-border/50 pt-[env(safe-area-inset-top)]">
-      <div className="w-full max-w-md sm:max-w-lg mx-auto flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2.5">
+      <div className="w-full max-w-sm sm:max-w-md mx-auto flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2.5">
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary-glow blur-md opacity-70" />
           <img
