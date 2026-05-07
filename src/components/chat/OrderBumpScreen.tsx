@@ -187,7 +187,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
         className="fixed inset-x-0 bottom-0 z-30 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-background via-background/95 to-background/0 backdrop-blur-md"
         style={{ animation: "message-in 0.4s ease both" }}
       >
-        <div className="mx-auto w-full max-w-md sm:max-w-lg">
+        <div className="mx-auto w-full max-w-sm sm:max-w-md">
           <CtaButton onClick={() => onConfirm(withBump)}>
             {withBump
               ? `PAGAR ${formatBRL(totalCents)} COM BONUS 🔥`

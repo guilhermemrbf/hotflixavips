@@ -139,7 +139,7 @@ export function ChatScreen() {
       <ChatHeader />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
-        <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="w-full max-w-sm sm:max-w-md mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
