@@ -99,7 +99,7 @@ export function ChatScreen() {
   useEffect(() => {
     if (step !== 1) return;
     setStage1(0);
-    const timers = [400, 1300, 2300, 3200].map((ms, i) =>
+    const timers = [300, 1100, 2000].map((ms, i) =>
       setTimeout(() => setStage1(i + 1), ms)
     );
     return () => timers.forEach(clearTimeout);
@@ -109,7 +109,7 @@ export function ChatScreen() {
   useEffect(() => {
     if (step !== 2) return;
     setStage2(0);
-    const timers = [200, 1400, 2300, 3400, 4300, 5400, 6300, 7200].map(
+    const timers = [150, 1100, 2000, 2800].map(
       (ms, i) => setTimeout(() => setStage2(i + 1), ms)
     );
     return () => timers.forEach(clearTimeout);
@@ -150,23 +150,16 @@ export function ChatScreen() {
               {stage1 < 1 ? (
                 <TypingBubble />
               ) : (
-                <Bubble delay={0}>Oii... tava pensando em voce</Bubble>
+                <Bubble delay={0}>Oii amor... tava te esperando 🔥</Bubble>
               )}
               {stage1 >= 1 && stage1 < 2 && <TypingBubble />}
               {stage1 >= 2 && (
                 <Bubble delay={0}>
-                  Separei uma coisa especial so pra quem chegou aqui
+                  Tenho um <strong>acesso privado</strong> esperando voce —
+                  coisa que eu nao mando pra qualquer um
                 </Bubble>
               )}
-              {stage1 >= 2 && stage1 < 3 && <TypingBubble />}
               {stage1 >= 3 && (
-                <Bubble delay={0}>
-                  Tenho um <strong>acesso privado</strong> esperando voce — coisa
-                  que eu nao mando pra qualquer um
-                </Bubble>
-              )}
-
-              {stage1 >= 4 && (
                 <div
                   className="mt-4 text-center"
                   style={{
@@ -194,7 +187,7 @@ export function ChatScreen() {
           {/* ETAPA VSL */}
           {step === "vsl" && (
             <Suspense fallback={<LazyFallback />}>
-              <VslScreen onContinue={() => setStep(2)} />
+              <VslScreen onContinue={() => setStep(3)} />
             </Suspense>
           )}
 
@@ -236,30 +229,15 @@ export function ChatScreen() {
                 </div>
               )}
 
-              {stage2 >= 1 && stage2 < 3 && <TypingBubble />}
+              {stage2 >= 1 && stage2 < 2 && <TypingBubble />}
+              {stage2 >= 2 && (
+                <Bubble delay={0}>
+                  Isso é só uma previa... lá dentro vai{" "}
+                  <strong>muito além</strong> 🔥
+                </Bubble>
+              )}
+
               {stage2 >= 3 && (
-                <Bubble delay={0}>
-                  To te mandando uma <strong>previa</strong> so pra voce ter
-                  uma ideia...
-                </Bubble>
-              )}
-
-              {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
-              {stage2 >= 5 && (
-                <Bubble delay={0}>
-                  Isso é só o que posso mostrar aqui fora. Lá dentro vai{" "}
-                  <strong>muito além</strong> — e fica só entre a gente.
-                </Bubble>
-              )}
-
-              {stage2 >= 5 && stage2 < 7 && <TypingBubble />}
-              {stage2 >= 7 && (
-                <Bubble delay={0}>
-                  Coisa que fica so entre a gente.
-                </Bubble>
-              )}
-
-              {stage2 >= 8 && (
                 <div
                   className="mt-4"
                   style={{
