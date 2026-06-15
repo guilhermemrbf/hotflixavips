@@ -169,14 +169,6 @@ export function ChatScreen() {
     });
   }, [items.length, phase, selectedPlan.id, withBump]);
 
-  const handleStart = useCallback(() => {
-    if (phase !== "intro") return;
-    setPhase("vsl");
-    pushItem({ type: "user", content: "Quero ver 🔥" });
-    botAfterTyping("Separei uma prévia rápida pra você. Depois eu já libero as opções.", 280, 520);
-    schedule(() => pushItem({ type: "vsl" }), 1250);
-  }, [botAfterTyping, phase, pushItem, schedule]);
-
   const handleVslComplete = useCallback(() => {
     if (vslCompletedRef.current) return;
     vslCompletedRef.current = true;
@@ -189,10 +181,11 @@ export function ChatScreen() {
     (plan: Plan) => {
       if (phase !== "plans") return;
       setSelectedPlan(plan);
-      setPhase("bump");
+      setWithBump(false);
+      setPhase("pix");
       pushItem({ type: "user", content: <>Escolhi: {plan.title}</> });
-      botAfterTyping("Boa. Antes do Pix, tenho uma última opção rápida pra deixar seu acesso mais completo:", 360, 560);
-      schedule(() => pushItem({ type: "bump" }), 1280);
+      botAfterTyping("Fechado. Vou gerar seu Pix agora e liberar tudo automaticamente quando cair.", 360, 560);
+      schedule(() => pushItem({ type: "pix" }), 1250);
     },
     [botAfterTyping, phase, pushItem, schedule],
   );
@@ -241,7 +234,6 @@ export function ChatScreen() {
               selectedPlan={selectedPlan}
               withBump={withBump}
               vipLink={vipLink}
-              onStart={handleStart}
               onVslComplete={handleVslComplete}
               onPlanSelect={handlePlanSelect}
               onBumpConfirm={handleBumpConfirm}
