@@ -27,7 +27,7 @@ export function Bubble({
     >
       <div
         className={cn(
-          "max-w-[85%] sm:max-w-[78%] text-[13.5px] sm:text-[14.5px] leading-snug shadow-soft",
+          "max-w-[85%] sm:max-w-[78%] text-[15px] sm:text-[16px] leading-snug shadow-soft",
           from === "her" ? "bubble-her" : "bubble-me font-medium"
         )}
       >
