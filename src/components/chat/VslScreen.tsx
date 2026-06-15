@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CtaButton } from "./CtaButton";
+import vslAsset from "@/assets/vsl.mp4.asset.json";
 
 interface Props {
   onContinue: () => void;
@@ -22,7 +23,7 @@ function detectIOS(): boolean {
   return isiOS || isiPadOS;
 }
 
-export function VslScreen({ onContinue, videoSrc = "/vsl.mp4" }: Props) {
+export function VslScreen({ onContinue, videoSrc = vslAsset.url }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [watched, setWatched] = useState(0);
   const [revealed, setRevealed] = useState(false);
