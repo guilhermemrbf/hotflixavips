@@ -143,8 +143,8 @@ export function ChatScreen() {
           {/* ETAPA 1 */}
           {step === 1 && (
             <>
-              <p className="text-center text-[10.5px] text-muted-foreground mb-1.5">
-                Letícia • Hotflix — Acesso exclusivo
+              <p className="text-center text-[12px] text-muted-foreground mb-1.5">
+                Hotflix 🔥 — Acesso exclusivo
               </p>
 
               {stage1 < 1 ? (
@@ -175,7 +175,7 @@ export function ChatScreen() {
                     <CtaButton delay={0} onClick={() => setStep("vsl")}>
                       QUERO VER 🔥
                     </CtaButton>
-                    <p className="mt-1.5 text-[10.5px] text-muted-foreground">
+                    <p className="mt-1.5 text-[12px] text-muted-foreground">
                       Grátis pra ver • Sem cadastro
                     </p>
                   </div>
@@ -196,7 +196,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep("vsl")}
-                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+                className="text-[12px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -220,7 +220,7 @@ export function ChatScreen() {
                         loading="eager"
                       />
                       <div className="absolute top-2 left-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-full shadow-lg">
+                        <span className="text-[12px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-full shadow-lg">
                           🔥 Prévia
                         </span>
                       </div>
@@ -258,7 +258,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(2)}
-                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+                className="text-[12px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
@@ -269,10 +269,10 @@ export function ChatScreen() {
                   animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                 }}
               >
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
+                <span className="inline-block text-[12px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
                   Acesso Liberado
                 </span>
-                <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                <h2 className="text-[19px] sm:text-[23px] leading-tight font-extrabold text-foreground">
                   🔥 Escolhe seu acesso agora —{" "}
                   <span className="text-gradient">
                     esse preco nao vai durar
@@ -285,7 +285,7 @@ export function ChatScreen() {
 
               {stage3 >= 1 && (
                 <div
-                  className="space-y-2"
+                  className="space-y-3"
                   style={{
                     animation:
                       "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
@@ -333,7 +333,7 @@ export function ChatScreen() {
             <>
               <button
                 onClick={() => setStep(4)}
-                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+                className="text-[12px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>

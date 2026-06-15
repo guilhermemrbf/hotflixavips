@@ -178,10 +178,10 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <div className="text-center space-y-1">
-        <h2 className="text-[17px] sm:text-xl font-extrabold text-foreground leading-tight">
+        <h2 className="text-[19px] sm:text-xl font-extrabold text-foreground leading-tight">
           Falta <span className="text-gradient">1 passo</span> pra entrar
         </h2>
-        <p className="text-[11px] text-muted-foreground tabular-nums">
+        <p className="text-[13px] text-muted-foreground tabular-nums">
           Expira em <span className="text-foreground font-semibold">{mm}:{ss}</span>
         </p>
       </div>
@@ -189,11 +189,11 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
       {/* Faixa de comentários animados — prova social compacta */}
       <div className="relative overflow-hidden rounded-2xl bg-card/60 border border-border py-2">
         <div className="flex items-center justify-between px-3 pb-1.5">
-          <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-online">
+          <span className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-wider text-online">
             <span className="h-1.5 w-1.5 rounded-full bg-online animate-pulse-ring" />
             ao vivo · pagando agora
           </span>
-          <span className="text-[10px] text-muted-foreground tabular-nums">+128 hoje</span>
+          <span className="text-[12px] text-muted-foreground tabular-nums">+128 hoje</span>
         </div>
         <div
           className="flex gap-2.5 whitespace-nowrap w-max"
@@ -216,7 +216,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
             return loop.map((c, i) => (
               <div
                 key={i}
-                className="inline-flex items-center gap-2 rounded-2xl bg-bubble-her border border-online/25 pl-1.5 pr-3 py-1.5 text-[12.5px] text-foreground shadow-soft"
+                className="inline-flex items-center gap-2 rounded-2xl bg-bubble-her border border-online/25 pl-1.5 pr-3 py-1.5 text-[14px] text-foreground shadow-soft"
               >
                 <span
                   className={`relative shrink-0 h-7 w-7 rounded-full bg-gradient-to-br ${c.c} flex items-center justify-center text-white font-bold text-[12px]`}
@@ -226,10 +226,10 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
                 </span>
                 <span className="flex flex-col leading-tight">
                   <span className="flex items-center gap-1.5">
-                    <span className="font-bold text-foreground text-[12.5px]">{c.n}</span>
-                    <span className="text-[9.5px] text-muted-foreground">· {c.w}</span>
+                    <span className="font-bold text-foreground text-[14px]">{c.n}</span>
+                    <span className="text-[12px] text-muted-foreground">· {c.w}</span>
                   </span>
-                  <span className="text-foreground/85 text-[12px]">{c.t}</span>
+                  <span className="text-foreground/85 text-[13px]">{c.t}</span>
                 </span>
               </div>
             ));
@@ -320,7 +320,7 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
 
       {/* Passo a passo — público menos tech */}
       <div className="rounded-2xl bg-card/60 border border-border p-3">
-        <p className="text-[10.5px] font-bold uppercase tracking-wider text-primary text-center mb-2">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-primary text-center mb-2">
           Como pagar em 30 segundos
         </p>
         <ol className="space-y-1.5">
@@ -331,16 +331,16 @@ export function PixDirect({ plan, withBump = false, onPaid }: Props) {
             "Pronto — acesso liberado 🔥",
           ].map((t, i) => (
             <li key={i} className="flex gap-2.5 items-center">
-              <span className="shrink-0 h-5 w-5 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+              <span className="shrink-0 h-5 w-5 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-[12px] font-bold flex items-center justify-center">
                 {i + 1}
               </span>
-              <span className="text-[12.5px] text-foreground/90 leading-snug">{t}</span>
+              <span className="text-[14px] text-foreground/90 leading-snug">{t}</span>
             </li>
           ))}
         </ol>
       </div>
 
-      <CtaButton onClick={handleCheckNow} disabled={checking}>
+      <CtaButton onClick={handleCheckNow} disabled={checking} className="text-[15px] py-4">
         {checking ? "VERIFICANDO…" : "JÁ PAGUEI ✅"}
       </CtaButton>
 
