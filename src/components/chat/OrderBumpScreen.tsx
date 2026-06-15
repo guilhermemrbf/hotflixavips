@@ -40,12 +40,12 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
 
   return (
     <div
-      className="space-y-2.5 px-0.5 pb-[calc(6rem+env(safe-area-inset-bottom))]"
+      className="space-y-2.5 px-0.5"
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <button
         onClick={onBack}
-        className="text-[11px] text-muted-foreground hover:text-primary flex items-center gap-1 py-0.5 -ml-1"
+        className="text-[12px] text-muted-foreground hover:text-primary flex items-center gap-1 py-0.5 -ml-1"
       >
         ← trocar plano
       </button>
@@ -84,7 +84,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
               <path d="M8 10V7a4 4 0 018 0v3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+          <p className="text-[12px] font-bold uppercase tracking-widest text-primary">
             Conteúdo bloqueado
           </p>
         </div>
@@ -128,19 +128,19 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-primary">
               SIM, adicionar ao meu pedido
             </p>
             <h3 className="text-[15px] sm:text-[17px] font-extrabold text-foreground leading-tight mt-0.5">
               🎁 Pack Secreto • Hotflix
             </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-1 leading-snug">
+            <p className="text-[13px] text-muted-foreground mt-1 leading-snug">
               Meus videos mais ousados, que{" "}
               <strong className="text-foreground">só libero aqui</strong>. 😈
             </p>
 
             <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-2">
-              <span className="text-[11px] text-muted-foreground line-through">
+              <span className="text-[13px] text-muted-foreground line-through">
                 R$ 23,90
               </span>
               <span className="text-[18px] sm:text-2xl font-extrabold text-gradient">
@@ -182,22 +182,17 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
         </div>
       </div>
 
-      {/* Sticky CTA — última chamada fixa no mobile */}
-      <div
-        className="fixed inset-x-0 bottom-0 z-30 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-background via-background/95 to-background/0 backdrop-blur-md"
-        style={{ animation: "message-in 0.4s ease both" }}
-      >
-        <div className="mx-auto w-full max-w-md sm:max-w-lg">
-          <CtaButton onClick={() => onConfirm(withBump)}>
-            {withBump
-              ? `PAGAR ${formatBRL(totalCents)} COM BONUS 🔥`
-              : `PAGAR ${formatBRL(totalCents)} AGORA 🔥`}
-          </CtaButton>
-          <div className="mt-1.5 flex items-center justify-center gap-2 text-[9.5px] text-muted-foreground">
-            <span>🔒 Pix seguro</span>
-            <span>·</span>
-            <span>100% sigiloso</span>
-          </div>
+      {/* Inline CTA */}
+      <div className="pt-2">
+        <CtaButton onClick={() => onConfirm(withBump)} className="py-4 text-[15px]">
+          {withBump
+            ? `PAGAR ${formatBRL(totalCents)} COM BONUS 🔥`
+            : `PAGAR ${formatBRL(totalCents)} AGORA 🔥`}
+        </CtaButton>
+        <div className="mt-1.5 flex items-center justify-center gap-2 text-[12px] text-muted-foreground">
+          <span>🔒 Pix seguro</span>
+          <span>·</span>
+          <span>100% sigiloso</span>
         </div>
       </div>
     </div>
