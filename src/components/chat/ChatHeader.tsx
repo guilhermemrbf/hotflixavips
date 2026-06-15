@@ -8,8 +8,8 @@ export function ChatHeader() {
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary-glow blur-md opacity-70" />
           <img
             src={leticiaAvatar}
-            alt="Hotflix"
-            className="relative h-11 w-11 sm:h-12 sm:w-12 rounded-full ring-2 ring-primary/60 object-cover"
+            alt="Letícia • Hotflix"
+            className="relative h-9 w-9 sm:h-11 sm:w-11 rounded-full ring-2 ring-primary/60 object-cover"
             loading="eager"
           />
           <span className="absolute bottom-0 right-0 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-online ring-2 ring-background animate-pulse-ring" />
@@ -23,6 +23,22 @@ export function ChatHeader() {
             online agora
           </p>
         </div>
+        <button
+          className="text-muted-foreground hover:text-foreground transition"
+          aria-label="opções"
+        >
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="12" cy="5" r="1.5" />
+            <circle cx="12" cy="12" r="1.5" />
+            <circle cx="12" cy="19" r="1.5" />
+          </svg>
+        </button>
       </div>
     </header>
   );

@@ -1,8 +1,18 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { ChatHeader } from "./ChatHeader";
 import { Bubble, TypingBubble } from "./Bubble";
+import { CtaButton } from "./CtaButton";
 import { Plan, PlanCard } from "./PlanCard";
+import leticiaPreview from "@/assets/leticia-preview.webp";
 
+// Code-splitting: telas pesadas só carregam quando necessário,
+// reduzindo drasticamente o JS inicial.
+const VslScreen = lazy(() =>
+  import("./VslScreen").then((m) => ({ default: m.VslScreen })),
+);
+const OrderBumpScreen = lazy(() =>
+  import("./OrderBumpScreen").then((m) => ({ default: m.OrderBumpScreen })),
+);
 const PixDirect = lazy(() =>
   import("./PixDirect").then((m) => ({ default: m.PixDirect })),
 );
@@ -21,20 +31,37 @@ function LazyFallback() {
   );
 }
 
-type Step = 1 | 2 | 3;
+type Step = 1 | "vsl" | 2 | 3 | 4 | 5 | 6;
 
 const PLANS: Plan[] = [
   {
     id: "vital",
-    title: "🔥 Acesso Vitalício — 500+ Mídias",
+    title: "🥇 Vitalício + 500 Mídias 🔥",
     price: "R$ 12,90",
     oldPrice: "R$ 49,90",
-    badge: "MAIS ESCOLHIDO",
+    badge: "MAIS ESCOLHIDO 🔥",
+    highlight: true,
+  },
+  {
+    id: "bonus",
+    title: "💎 Vitalício + Pack Secreto",
+    description:
+      "Acesso vitalicio + pack bonus de videos exclusivos que eu nao libero pra todo mundo",
+    price: "R$ 8,90",
+    oldPrice: "R$ 29,90",
+  },
+  {
+    id: "videocall",
+    title: "📹 CHAMADA DE VÍDEO",
+    description: "30 minutos ao vivo comigo, só você e eu",
+    price: "R$ 22,90",
+    oldPrice: "R$ 79,90",
+    badge: "EXCLUSIVO 😈",
     highlight: true,
   },
   {
     id: "week",
-    title: "🟢 Acesso por 7 dias",
+    title: "🟢 1 SEMANA 🟢",
     price: "R$ 6,90",
     oldPrice: "R$ 19,90",
   },
@@ -45,27 +72,55 @@ const VIP_ACCESS_URL = "https://t.me/+0ApNmK8IQSFmNDRh";
 export function ChatScreen() {
   const [step, setStep] = useState<Step>(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(PLANS[0]);
+  const [withBump, setWithBump] = useState(false);
   const [stage1, setStage1] = useState(0);
   const [stage2, setStage2] = useState(0);
+  const [stage3, setStage3] = useState(0);
   const [vipLink, setVipLink] = useState<string>(VIP_ACCESS_URL);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // ETAPA 1 — Intro + Planos
+  // Warm-up leve: apenas o poster e o chunk JS da VSL enquanto o usuário
+  // lê o chat. O VÍDEO (6MB) só baixa quando ele clicar em QUERO VER —
+  // isso reduz muito o uso de banda no carregamento inicial.
+  useEffect(() => {
+    if (step !== 1) return;
+    const img = new Image();
+    img.src = "/vsl-poster.jpg";
+    // Pré-importa o chunk da VSL em idle (sem bloquear)
+    const idle =
+      (window as any).requestIdleCallback ||
+      ((cb: () => void) => setTimeout(cb, 800));
+    idle(() => {
+      import("./VslScreen").catch(() => {});
+    });
+  }, [step]);
+
+  // ETAPA 1
   useEffect(() => {
     if (step !== 1) return;
     setStage1(0);
-    const timers = [300, 900, 1200, 1900, 2500, 3100, 3600, 3900, 4500, 4800].map(
-      (ms, i) => setTimeout(() => setStage1(i + 1), ms)
+    const timers = [300, 1100, 2000].map((ms, i) =>
+      setTimeout(() => setStage1(i + 1), ms)
     );
     return () => timers.forEach(clearTimeout);
   }, [step]);
 
-  // ETAPA 2 — Confirmação do plano + PIX
+  // ETAPA 2
   useEffect(() => {
     if (step !== 2) return;
     setStage2(0);
-    const timers = [150, 600, 1100, 1700, 2400, 3200].map(
+    const timers = [150, 1100, 2000, 2800].map(
       (ms, i) => setTimeout(() => setStage2(i + 1), ms)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [step]);
+
+  // ETAPA 3
+  useEffect(() => {
+    if (step !== 3) return;
+    setStage3(0);
+    const timers = [300, 1000].map((ms, i) =>
+      setTimeout(() => setStage3(i + 1), ms)
     );
     return () => timers.forEach(clearTimeout);
   }, [step]);
@@ -77,7 +132,7 @@ export function ChatScreen() {
     requestAnimationFrame(() => {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     });
-  }, [step, stage1, stage2]);
+  }, [step, stage1, stage2, stage3]);
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -85,54 +140,157 @@ export function ChatScreen() {
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
         <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-
-          {/* ETAPA 1 — INTRO + PLANOS */}
+          {/* ETAPA 1 */}
           {step === 1 && (
             <>
-              <p className="text-center text-[11px] text-muted-foreground mb-1.5">
-                Hotflix🔥 — Acesso exclusivo
+              <p className="text-center text-[10.5px] text-muted-foreground mb-1.5">
+                Letícia • Hotflix — Acesso exclusivo
               </p>
 
-              {stage1 < 1 && <TypingBubble />}
-              {stage1 >= 1 && (
-                <Bubble delay={0}>Oi! Tô aqui esperando você 🔥</Bubble>
+              {stage1 < 1 ? (
+                <TypingBubble />
+              ) : (
+                <Bubble delay={0}>Oii amor... tava te esperando 🔥</Bubble>
               )}
-
-              {stage1 >= 1 && stage1 < 3 && <TypingBubble />}
+              {stage1 >= 1 && stage1 < 2 && <TypingBubble />}
+              {stage1 >= 2 && (
+                <Bubble delay={0}>
+                  Tenho um <strong>acesso privado</strong> esperando voce —
+                  coisa que eu nao mando pra qualquer um
+                </Bubble>
+              )}
               {stage1 >= 3 && (
-                <Bubble delay={0}>
-                  Tenho um acesso especial reservado — coisa que não libero pra qualquer um
-                </Bubble>
-              )}
-
-              {stage1 >= 3 && stage1 < 5 && <TypingBubble />}
-              {stage1 >= 5 && (
-                <Bubble delay={0}>
-                  Você veio do lugar certo. Deixa eu te mostrar o que tem aqui dentro 👇
-                </Bubble>
-              )}
-
-              {stage1 >= 7 && (
-                <Bubble from="me" delay={0}>Quero ver!</Bubble>
-              )}
-
-              {stage1 >= 7 && stage1 < 9 && <TypingBubble />}
-              {stage1 >= 9 && (
-                <Bubble delay={0}>
-                  Perfeito. Olha só o que você vai acessar agora:
-                </Bubble>
-              )}
-
-              {stage1 >= 10 && (
                 <div
-                  className="space-y-4"
+                  className="mt-4 text-center"
                   style={{
-                    animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                    animation:
+                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
                   }}
                 >
-                  <p className="text-[15px] text-foreground text-center font-medium">
-                    Escolhe o acesso que faz mais sentido pra você:
+                  <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                    ⚠️ Só quem chegou aqui{" "}
+                    <span className="text-gradient">pode ver.</span>
                   </p>
+                  <div className="mt-3">
+                    <CtaButton delay={0} onClick={() => setStep("vsl")}>
+                      QUERO VER 🔥
+                    </CtaButton>
+                    <p className="mt-1.5 text-[10.5px] text-muted-foreground">
+                      Grátis pra ver • Sem cadastro
+                    </p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ETAPA VSL */}
+          {step === "vsl" && (
+            <Suspense fallback={<LazyFallback />}>
+              <VslScreen onContinue={() => setStep(3)} />
+            </Suspense>
+          )}
+
+          {/* ETAPA 2 */}
+          {step === 2 && (
+            <>
+              <button
+                onClick={() => setStep("vsl")}
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+              >
+                ← voltar
+              </button>
+
+              {stage2 < 1 ? (
+                <TypingBubble />
+              ) : (
+                <div
+                  className="flex justify-start mb-2"
+                  style={{
+                    animation:
+                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                  }}
+                >
+                  <div className="max-w-[82%] p-1.5 bg-bubble-her rounded-[1.25rem] rounded-bl-[0.25rem] shadow-soft">
+                    <div className="relative rounded-2xl overflow-hidden border border-primary/40 neon-glow">
+                      <img
+                        src={leticiaPreview}
+                        alt="Prévia exclusiva Letícia • Hotflix"
+                        className="w-full h-auto block max-h-[38dvh] object-cover"
+                        loading="eager"
+                      />
+                      <div className="absolute top-2 left-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-glow text-primary-foreground px-2.5 py-1 rounded-full shadow-lg">
+                          🔥 Prévia
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {stage2 >= 1 && stage2 < 2 && <TypingBubble />}
+              {stage2 >= 2 && (
+                <Bubble delay={0}>
+                  Isso é só uma previa... lá dentro vai{" "}
+                  <strong>muito além</strong> 🔥
+                </Bubble>
+              )}
+
+              {stage2 >= 3 && (
+                <div
+                  className="mt-4"
+                  style={{
+                    animation:
+                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                  }}
+                >
+                  <CtaButton delay={0} onClick={() => setStep(3)}>
+                    LIBERAR MEU ACESSO 🔥
+                  </CtaButton>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ETAPA 3 */}
+          {step === 3 && (
+            <>
+              <button
+                onClick={() => setStep(2)}
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+              >
+                ← voltar
+              </button>
+
+              <div
+                className="text-center mb-3"
+                style={{
+                  animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                }}
+              >
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
+                  Acesso Liberado
+                </span>
+                <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+                  🔥 Escolhe seu acesso agora —{" "}
+                  <span className="text-gradient">
+                    esse preco nao vai durar
+                  </span>
+                </h2>
+                <p className="mt-1.5 text-[12px] font-semibold text-primary">
+                  Você vai entrar no 🔥 Club Proibido - Hotflix
+                </p>
+              </div>
+
+              {stage3 >= 1 && (
+                <div
+                  className="space-y-2"
+                  style={{
+                    animation:
+                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+                  }}
+                >
                   {PLANS.map((p, i) => (
                     <PlanCard
                       key={p.id}
@@ -140,62 +298,60 @@ export function ChatScreen() {
                       selected={selectedPlan.id === p.id}
                       onSelect={() => {
                         setSelectedPlan(p);
-                        setStep(2);
+                        setTimeout(() => setStep(4), 280);
                       }}
                       delay={i * 100}
                     />
                   ))}
                 </div>
               )}
+
+              {stage3 >= 2 && (
+                <UrgencyNotice />
+              )}
             </>
           )}
 
-          {/* ETAPA 2 — CONFIRMAÇÃO + PIX */}
-          {step === 2 && (
+          {/* ETAPA 4 */}
+          {step === 4 && (
+            <>
+              <Suspense fallback={<LazyFallback />}>
+                <OrderBumpScreen
+                  plan={selectedPlan}
+                  onBack={() => setStep(3)}
+                  onConfirm={(bump) => {
+                    setWithBump(bump);
+                    setStep(5);
+                  }}
+                />
+              </Suspense>
+            </>
+          )}
+
+          {/* ETAPA 5 — PIX */}
+          {step === 5 && (
             <>
               <button
-                onClick={() => setStep(1)}
-                className="text-[12px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
+                onClick={() => setStep(4)}
+                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
               >
                 ← voltar
               </button>
-
-              {stage2 >= 1 && (
-                <Bubble from="me" delay={0}>
-                  Escolhi: {selectedPlan.title}
-                </Bubble>
-              )}
-
-              {stage2 >= 1 && stage2 < 3 && <TypingBubble />}
-              {stage2 >= 3 && (
-                <Bubble delay={0}>
-                  Fechado. Vou gerar seu Pix agora…
-                </Bubble>
-              )}
-
-              {stage2 >= 3 && stage2 < 5 && <TypingBubble />}
-              {stage2 >= 5 && (
-                <Bubble delay={0}>
-                  Gerou o Pix! É só copiar o código e pagar no app do banco. Assim que cair, o acesso abre aqui mesmo 🔒
-                </Bubble>
-              )}
-
-              {stage2 >= 6 && (
-                <Suspense fallback={<LazyFallback />}>
-                  <PixDirect
-                    plan={selectedPlan}
-                    onPaid={(inviteLink) => {
-                      if (inviteLink) setVipLink(inviteLink);
-                      setStep(3);
-                    }}
-                  />
-                </Suspense>
-              )}
+              <Suspense fallback={<LazyFallback />}>
+                <PixDirect
+                  plan={selectedPlan}
+                  withBump={withBump}
+                  onPaid={(inviteLink) => {
+                    if (inviteLink) setVipLink(inviteLink);
+                    setStep(6);
+                  }}
+                />
+              </Suspense>
             </>
           )}
 
-          {/* ETAPA 3 — Sucesso */}
-          {step === 3 && (
+          {/* ETAPA 6 — Sucesso */}
+          {step === 6 && (
             <div className="pt-2">
               <Suspense fallback={<LazyFallback />}>
                 <PaymentSuccess
@@ -208,6 +364,31 @@ export function ChatScreen() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function UrgencyNotice() {
+  const [seconds, setSeconds] = useState(15 * 60);
+  useEffect(() => {
+    const t = setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  return (
+    <div
+      className="mt-5 rounded-2xl bg-destructive/20 border border-destructive/50 px-4 py-3 text-center"
+      style={{
+        animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
+      }}
+    >
+      <p className="text-[13px] text-white font-semibold leading-snug">
+        🚨 Preco promocional por tempo limitado. Pode subir a qualquer momento.
+      </p>
+      <p className="mt-1.5 font-mono text-base font-extrabold text-destructive tabular-nums">
+        {mm}:{ss}
+      </p>
     </div>
   );
 }

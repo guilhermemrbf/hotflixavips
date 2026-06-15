@@ -4,13 +4,13 @@ import { ChatScreen } from "@/components/chat/ChatScreen";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Hotflix VIP — Área Privada 🔥" },
+      { title: "Letícia VIP — Área Privada 🔥" },
       {
         name: "description",
         content:
           "Conteúdo exclusivo só pra quem veio do Insta. Acesso VIP imediato via Pix.",
       },
-      { property: "og:title", content: "Hotflix VIP — Área Privada 🔥" },
+      { property: "og:title", content: "Letícia VIP — Área Privada 🔥" },
       {
         property: "og:description",
         content:
