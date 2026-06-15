@@ -29,7 +29,7 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
         animationDelay: `${delay}ms`,
       }}
       className={cn(
-        "w-full text-left rounded-2xl p-3 sm:p-4 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.98]",
+        "w-full text-left rounded-2xl py-4 px-3 sm:py-5 sm:px-4 border-2 transition-all duration-200 relative overflow-hidden active:scale-[0.98]",
         isHighlight
           ? "border-primary bg-gradient-to-br from-primary/15 via-card to-card neon-glow"
           : selected
@@ -50,23 +50,23 @@ export function PlanCard({ plan, selected, onSelect, delay = 0 }: Props) {
 
       <div className="flex items-center gap-2.5 mt-0.5">
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-foreground text-[13.5px] sm:text-[15px] leading-tight pr-2">
+          <p className="font-bold text-foreground text-[16px] sm:text-[17px] leading-tight pr-2">
             {plan.title}
           </p>
           {plan.description && (
-            <p className="text-[10.5px] text-muted-foreground mt-0.5 leading-snug pr-2">
+            <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug pr-2">
               {plan.description}
             </p>
           )}
           <div className="flex items-baseline gap-2 mt-1">
             {plan.oldPrice && (
-              <span className="text-[11px] text-muted-foreground line-through">
+              <span className="text-[13px] text-muted-foreground line-through">
                 {plan.oldPrice}
               </span>
             )}
             <span
               className={cn(
-                "font-extrabold text-lg sm:text-2xl",
+                "font-extrabold text-[20px] sm:text-[22px]",
                 isHighlight ? "text-gradient" : "text-foreground"
               )}
             >
