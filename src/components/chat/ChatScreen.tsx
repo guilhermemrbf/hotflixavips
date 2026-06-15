@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { ChatHeader } from "./ChatHeader";
 import { Bubble, TypingBubble } from "./Bubble";
 import { CtaButton } from "./CtaButton";
@@ -30,17 +30,20 @@ function LazyFallback() {
   );
 }
 
-type Step = 1 | "vsl" | 2 | 3 | 4 | 5 | 6;
+type ChatPhase = "intro" | "vsl" | "plans" | "bump" | "pix" | "success";
 
-const STEP_ORDER: Record<Step, number> = {
-  1: 1,
-  vsl: 2,
-  2: 3,
-  3: 4,
-  4: 5,
-  5: 6,
-  6: 7,
-};
+type TimelineItem =
+  | { id: string; type: "bot"; content: React.ReactNode }
+  | { id: string; type: "user"; content: React.ReactNode }
+  | { id: string; type: "typing" }
+  | { id: string; type: "introCta" }
+  | { id: string; type: "vsl" }
+  | { id: string; type: "plans" }
+  | { id: string; type: "bump" }
+  | { id: string; type: "pix" }
+  | { id: string; type: "success" };
+
+type TimelineItemDraft = Omit<TimelineItem, "id">;
 
 const PLANS: Plan[] = [
   {
@@ -78,34 +81,52 @@ const PLANS: Plan[] = [
 
 const VIP_ACCESS_URL = "https://t.me/+0ApNmK8IQSFmNDRh";
 
-function hasReached(current: Step, target: Step) {
-  return STEP_ORDER[current] >= STEP_ORDER[target];
-}
-
 export function ChatScreen() {
-  const [step, setStep] = useState<Step>(1);
+  const [phase, setPhase] = useState<ChatPhase>("intro");
+  const [items, setItems] = useState<TimelineItem[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(PLANS[0]);
   const [withBump, setWithBump] = useState(false);
-  const [stage1, setStage1] = useState(0);
-  const [stage2, setStage2] = useState(0);
-  const [stage3, setStage3] = useState(0);
   const [vipLink, setVipLink] = useState<string>(VIP_ACCESS_URL);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const timersRef = useRef<number[]>([]);
+  const nextIdRef = useRef(0);
+  const startedRef = useRef(false);
+  const vslCompletedRef = useRef(false);
+  const paidRef = useRef(false);
 
-  const reachedVsl = hasReached(step, "vsl");
-  const reachedPlans = hasReached(step, 3);
-  const reachedBump = hasReached(step, 4);
-  const reachedPix = hasReached(step, 5);
-  const reachedSuccess = hasReached(step, 6);
-  const stage1Visible = step === 1 ? stage1 : 3;
-  const stage2Visible = step === 2 ? stage2 : reachedPlans ? 4 : 0;
-  const stage3Visible = step === 3 ? stage3 : reachedBump ? 2 : 0;
+  const pushItem = useCallback((item: TimelineItemDraft) => {
+    const id = `chat-${nextIdRef.current++}`;
+    setItems((current) => [...current, { ...item, id } as TimelineItem]);
+    return id;
+  }, []);
+
+  const removeItem = useCallback((id: string) => {
+    setItems((current) => current.filter((item) => item.id !== id));
+  }, []);
+
+  const schedule = useCallback((fn: () => void, delay: number) => {
+    const timer = window.setTimeout(fn, delay);
+    timersRef.current.push(timer);
+  }, []);
+
+  const botAfterTyping = useCallback(
+    (content: React.ReactNode, delay: number, typingTime = 620) => {
+      schedule(() => {
+        const typingId = pushItem({ type: "typing" });
+        schedule(() => {
+          removeItem(typingId);
+          pushItem({ type: "bot", content });
+        }, typingTime);
+      }, delay);
+    },
+    [pushItem, removeItem, schedule],
+  );
 
   // Warm-up leve: apenas o poster e o chunk JS da VSL enquanto o usuário
   // lê o chat. O VÍDEO (6MB) só baixa quando ele clicar em QUERO VER —
   // isso reduz muito o uso de banda no carregamento inicial.
   useEffect(() => {
-    if (step !== 1) return;
     const img = new Image();
     img.src = "/vsl-poster.jpg";
     // Pré-importa o chunk da VSL em idle (sem bloquear)
@@ -115,46 +136,89 @@ export function ChatScreen() {
     idle(() => {
       import("./VslScreen").catch(() => {});
     });
-  }, [step]);
+  }, []);
 
-  // ETAPA 1
   useEffect(() => {
-    if (step !== 1) return;
-    setStage1(0);
-    const timers = [300, 1100, 2000].map((ms, i) =>
-      setTimeout(() => setStage1(i + 1), ms),
+    if (startedRef.current) return;
+    startedRef.current = true;
+
+    botAfterTyping(<>Oii amor... tava te esperando 🔥</>, 250, 520);
+    botAfterTyping(
+      <>
+        Tenho um <strong>acesso privado</strong> esperando voce — coisa que eu
+        nao mando pra qualquer um
+      </>,
+      1250,
+      720,
     );
-    return () => timers.forEach(clearTimeout);
-  }, [step]);
+    schedule(() => pushItem({ type: "introCta" }), 2450);
 
-  // ETAPA 2 legada
-  useEffect(() => {
-    if (step !== 2) return;
-    setStage2(0);
-    const timers = [150, 1100, 2000, 2800].map((ms, i) =>
-      setTimeout(() => setStage2(i + 1), ms),
-    );
-    return () => timers.forEach(clearTimeout);
-  }, [step]);
+    return () => {
+      timersRef.current.forEach(window.clearTimeout);
+      timersRef.current = [];
+    };
+  }, [botAfterTyping, pushItem, schedule]);
 
-  // ETAPA 3
   useEffect(() => {
-    if (step !== 3) return;
-    setStage3(0);
-    const timers = [300, 1000].map((ms, i) =>
-      setTimeout(() => setStage3(i + 1), ms),
-    );
-    return () => timers.forEach(clearTimeout);
-  }, [step]);
-
-  // Auto-scroll
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
     requestAnimationFrame(() => {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     });
-  }, [step, stage1, stage2, stage3, selectedPlan.id, withBump]);
+  }, [items.length, phase, selectedPlan.id, withBump]);
+
+  const handleStart = useCallback(() => {
+    if (phase !== "intro") return;
+    setPhase("vsl");
+    pushItem({ type: "user", content: "Quero ver 🔥" });
+    botAfterTyping("Separei uma prévia rápida pra você. Depois eu já libero as opções.", 280, 520);
+    schedule(() => pushItem({ type: "vsl" }), 1250);
+  }, [botAfterTyping, phase, pushItem, schedule]);
+
+  const handleVslComplete = useCallback(() => {
+    if (vslCompletedRef.current) return;
+    vslCompletedRef.current = true;
+    setPhase("plans");
+    botAfterTyping("Pronto. Agora escolhe o acesso que faz mais sentido pra você:", 450, 580);
+    schedule(() => pushItem({ type: "plans" }), 1350);
+  }, [botAfterTyping, pushItem, schedule]);
+
+  const handlePlanSelect = useCallback(
+    (plan: Plan) => {
+      if (phase !== "plans") return;
+      setSelectedPlan(plan);
+      setPhase("bump");
+      pushItem({ type: "user", content: <>Escolhi: {plan.title}</> });
+      botAfterTyping("Boa. Antes do Pix, tenho uma última opção rápida pra deixar seu acesso mais completo:", 360, 560);
+      schedule(() => pushItem({ type: "bump" }), 1280);
+    },
+    [botAfterTyping, phase, pushItem, schedule],
+  );
+
+  const handleBumpConfirm = useCallback(
+    (bump: boolean) => {
+      if (phase !== "bump") return;
+      setWithBump(bump);
+      setPhase("pix");
+      pushItem({
+        type: "user",
+        content: bump ? "Quero adicionar o Pack Secreto 🎁" : "Vou seguir sem o bônus",
+      });
+      botAfterTyping("Fechado. Vou gerar seu Pix agora e liberar tudo automaticamente quando cair.", 360, 560);
+      schedule(() => pushItem({ type: "pix" }), 1250);
+    },
+    [botAfterTyping, phase, pushItem, schedule],
+  );
+
+  const handlePaid = useCallback(
+    (inviteLink?: string | null) => {
+      if (paidRef.current) return;
+      paidRef.current = true;
+      if (inviteLink) setVipLink(inviteLink);
+      setPhase("success");
+      pushItem({ type: "user", content: "Pagamento confirmado ✅" });
+      pushItem({ type: "success" });
+    },
+    [pushItem],
+  );
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -162,201 +226,147 @@ export function ChatScreen() {
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
         <div className="w-full max-w-md sm:max-w-lg mx-auto px-3 sm:px-5 pt-2 sm:pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          <p className="text-center text-[10.5px] text-muted-foreground mb-1.5">
+          <p className="text-center text-[10.5px] text-muted-foreground mb-2">
             Letícia • Hotflix — Acesso exclusivo
           </p>
-
-          {stage1Visible < 1 ? (
-            <TypingBubble />
-          ) : (
-            <Bubble delay={0}>Oii amor... tava te esperando 🔥</Bubble>
-          )}
-          {stage1Visible >= 1 && stage1Visible < 2 && <TypingBubble />}
-          {stage1Visible >= 2 && (
-            <Bubble delay={0}>
-              Tenho um <strong>acesso privado</strong> esperando voce — coisa
-              que eu nao mando pra qualquer um
-            </Bubble>
-          )}
-          {stage1Visible >= 3 && step === 1 && (
-            <div
-              className="mt-4 text-center"
-              style={{
-                animation:
-                  "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-              }}
-            >
-              <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
-                ⚠️ Só quem chegou aqui{" "}
-                <span className="text-gradient">pode ver.</span>
-              </p>
-              <div className="mt-3">
-                <CtaButton delay={0} onClick={() => setStep("vsl")}>
-                  QUERO VER 🔥
-                </CtaButton>
-                <p className="mt-1.5 text-[10.5px] text-muted-foreground">
-                  Grátis pra ver • Sem cadastro
-                </p>
-              </div>
-            </div>
-          )}
-
-          {reachedVsl && (
-            <>
-              <Bubble from="me" delay={0}>
-                Quero ver 🔥
-              </Bubble>
-
-              {step === "vsl" && (
-                <Suspense fallback={<LazyFallback />}>
-                  <VslScreen onContinue={() => setStep(3)} />
-                </Suspense>
-              )}
-            </>
-          )}
-
-          {step === 2 && (
-            <>
-              {stage2Visible < 1 ? <TypingBubble /> : null}
-              {stage2Visible >= 2 && (
-                <Bubble delay={0}>
-                  Isso é só uma previa... lá dentro vai{" "}
-                  <strong>muito além</strong> 🔥
-                </Bubble>
-              )}
-              {stage2Visible >= 3 && (
-                <div
-                  className="mt-4"
-                  style={{
-                    animation:
-                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-                  }}
-                >
-                  <CtaButton delay={0} onClick={() => setStep(3)}>
-                    LIBERAR MEU ACESSO 🔥
-                  </CtaButton>
-                </div>
-              )}
-            </>
-          )}
-
-          {reachedPlans && (
-            <>
-              <Bubble from="me" delay={0}>
-                Vi a prévia, quero liberar meu acesso
-              </Bubble>
-
-              <div
-                className="text-center mb-3"
-                style={{
-                  animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-                }}
-              >
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
-                  Acesso Liberado
-                </span>
-                <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
-                  🔥 Escolhe seu acesso agora —{" "}
-                  <span className="text-gradient">esse preco nao vai durar</span>
-                </h2>
-                <p className="mt-1.5 text-[12px] font-semibold text-primary">
-                  Você vai entrar no 🔥 Club Proibido - Hotflix
-                </p>
-              </div>
-
-              {stage3Visible >= 1 && step === 3 && (
-                <div
-                  className="space-y-2"
-                  style={{
-                    animation:
-                      "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-                  }}
-                >
-                  {PLANS.map((p, i) => (
-                    <PlanCard
-                      key={p.id}
-                      plan={p}
-                      selected={selectedPlan.id === p.id}
-                      onSelect={() => {
-                        setSelectedPlan(p);
-                        setTimeout(() => setStep(4), 280);
-                      }}
-                      delay={i * 100}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {stage3Visible >= 2 && step === 3 && <UrgencyNotice />}
-
-              {reachedBump && (
-                <Bubble from="me" delay={0}>
-                  Escolhi: {selectedPlan.title}
-                </Bubble>
-              )}
-            </>
-          )}
-
-          {step === 4 && (
-            <Suspense fallback={<LazyFallback />}>
-              <OrderBumpScreen
-                plan={selectedPlan}
-                onBack={() => setStep(3)}
-                onConfirm={(bump) => {
-                  setWithBump(bump);
-                  setStep(5);
-                }}
-              />
-            </Suspense>
-          )}
-
-          {reachedPix && (
-            <Bubble from="me" delay={0}>
-              {withBump
-                ? "Quero adicionar o Pack Secreto 🎁"
-                : "Vou seguir sem o bônus"}
-            </Bubble>
-          )}
-
-          {step === 5 && (
-            <>
-              <button
-                onClick={() => setStep(4)}
-                className="text-[11px] text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 py-1 px-1 -ml-1 active:scale-95 transition"
-              >
-                ← voltar
-              </button>
-              <Suspense fallback={<LazyFallback />}>
-                <PixDirect
-                  plan={selectedPlan}
-                  withBump={withBump}
-                  onPaid={(inviteLink) => {
-                    if (inviteLink) setVipLink(inviteLink);
-                    setStep(6);
-                  }}
-                />
-              </Suspense>
-            </>
-          )}
-
-          {reachedSuccess && (
-            <>
-              <Bubble from="me" delay={0}>
-                Pagamento confirmado ✅
-              </Bubble>
-              <div className="pt-2">
-                <Suspense fallback={<LazyFallback />}>
-                  <PaymentSuccess
-                    telegramUrl={vipLink}
-                    planTitle={selectedPlan.title}
-                  />
-                  <Testimonials />
-                </Suspense>
-              </div>
-            </>
-          )}
+          {items.map((item) => (
+            <TimelineRenderer
+              key={item.id}
+              item={item}
+              phase={phase}
+              selectedPlan={selectedPlan}
+              withBump={withBump}
+              vipLink={vipLink}
+              onStart={handleStart}
+              onVslComplete={handleVslComplete}
+              onPlanSelect={handlePlanSelect}
+              onBumpConfirm={handleBumpConfirm}
+              onPaid={handlePaid}
+            />
+          ))}
+          <div ref={bottomRef} className="h-2" />
         </div>
       </div>
+    </div>
+  );
+}
+
+interface TimelineRendererProps {
+  item: TimelineItem;
+  phase: ChatPhase;
+  selectedPlan: Plan;
+  withBump: boolean;
+  vipLink: string;
+  onStart: () => void;
+  onVslComplete: () => void;
+  onPlanSelect: (plan: Plan) => void;
+  onBumpConfirm: (withBump: boolean) => void;
+  onPaid: (inviteLink?: string | null) => void;
+}
+
+function TimelineRenderer({
+  item,
+  phase,
+  selectedPlan,
+  withBump,
+  vipLink,
+  onStart,
+  onVslComplete,
+  onPlanSelect,
+  onBumpConfirm,
+  onPaid,
+}: TimelineRendererProps) {
+  if (item.type === "bot") return <Bubble delay={0}>{item.content}</Bubble>;
+  if (item.type === "user") return <Bubble from="me" delay={0}>{item.content}</Bubble>;
+  if (item.type === "typing") return <TypingBubble />;
+
+  if (item.type === "introCta") {
+    if (phase !== "intro") return null;
+    return (
+      <div
+        className="mt-4 text-center"
+        style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
+      >
+        <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+          ⚠️ Só quem chegou aqui <span className="text-gradient">pode ver.</span>
+        </p>
+        <div className="mt-3">
+          <CtaButton delay={0} onClick={onStart}>
+            QUERO VER 🔥
+          </CtaButton>
+          <p className="mt-1.5 text-[10.5px] text-muted-foreground">
+            Grátis pra ver • Sem cadastro
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (item.type === "vsl") {
+    return (
+      <Suspense fallback={<LazyFallback />}>
+        <VslScreen autoContinue onContinue={onVslComplete} />
+      </Suspense>
+    );
+  }
+
+  if (item.type === "plans") {
+    return (
+      <div
+        className="mt-3 space-y-2"
+        style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
+      >
+        <div className="text-center mb-2">
+          <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-2.5 py-0.5 rounded-full mb-2">
+            Acesso Liberado
+          </span>
+          <h2 className="text-[17px] sm:text-[22px] leading-tight font-extrabold text-foreground">
+            🔥 Escolhe seu acesso agora — <span className="text-gradient">esse preco nao vai durar</span>
+          </h2>
+          <p className="mt-1.5 text-[12px] font-semibold text-primary">
+            Você vai entrar no 🔥 Club Proibido - Hotflix
+          </p>
+        </div>
+        {PLANS.map((plan, index) => (
+          <PlanCard
+            key={plan.id}
+            plan={plan}
+            selected={selectedPlan.id === plan.id}
+            onSelect={() => onPlanSelect(plan)}
+            delay={index * 75}
+          />
+        ))}
+        {phase === "plans" && <UrgencyNotice />}
+      </div>
+    );
+  }
+
+  if (item.type === "bump") {
+    return (
+      <Suspense fallback={<LazyFallback />}>
+        <OrderBumpScreen
+          plan={selectedPlan}
+          showBack={false}
+          onConfirm={onBumpConfirm}
+        />
+      </Suspense>
+    );
+  }
+
+  if (item.type === "pix") {
+    return (
+      <Suspense fallback={<LazyFallback />}>
+        <PixDirect plan={selectedPlan} withBump={withBump} onPaid={onPaid} />
+      </Suspense>
+    );
+  }
+
+  return (
+    <div className="pt-2">
+      <Suspense fallback={<LazyFallback />}>
+        <PaymentSuccess telegramUrl={vipLink} planTitle={selectedPlan.title} />
+        <Testimonials />
+      </Suspense>
     </div>
   );
 }
