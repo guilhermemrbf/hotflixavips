@@ -18,7 +18,7 @@ export const CtaButton = forwardRef<HTMLButtonElement, CtaButtonProps>(
           ...props.style,
         }}
         className={cn(
-          "w-full rounded-full px-5 py-4 font-bold text-[15px] tracking-wide transition-transform duration-200 active:scale-[0.97]",
+          "w-full rounded-full px-5 py-4 font-bold text-[15px] tracking-wide transition-transform duration-200 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
           variant === "primary" &&
             "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground neon-glow hover:scale-[1.02] animate-pulse-glow",
           variant === "ghost" &&
