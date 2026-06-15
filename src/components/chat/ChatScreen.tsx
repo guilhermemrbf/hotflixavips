@@ -43,7 +43,11 @@ type TimelineItem =
   | { id: string; type: "pix" }
   | { id: string; type: "success" };
 
-type TimelineItemDraft = Omit<TimelineItem, "id">;
+type TimelineItemDraft = TimelineItem extends infer Item
+  ? Item extends { id: string }
+    ? Omit<Item, "id">
+    : never
+  : never;
 
 const PLANS: Plan[] = [
   {

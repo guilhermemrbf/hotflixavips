@@ -5,6 +5,7 @@ import vslAsset from "@/assets/vsl.mp4.asset.json";
 interface Props {
   onContinue: () => void;
   videoSrc?: string;
+  autoContinue?: boolean;
 }
 
 const REVEAL_AFTER_SECONDS = 5;
@@ -23,7 +24,7 @@ function detectIOS(): boolean {
   return isiOS || isiPadOS;
 }
 
-export function VslScreen({ onContinue, videoSrc = vslAsset.url }: Props) {
+export function VslScreen({ onContinue, videoSrc = vslAsset.url, autoContinue = false }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [watched, setWatched] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -170,6 +171,12 @@ export function VslScreen({ onContinue, videoSrc = vslAsset.url }: Props) {
     (watched / REVEAL_AFTER_SECONDS) * 100,
   );
 
+  useEffect(() => {
+    if (!autoContinue || !revealed) return;
+    const timer = window.setTimeout(onContinue, 900);
+    return () => window.clearTimeout(timer);
+  }, [autoContinue, onContinue, revealed]);
+
   return (
     <div
       className="pt-0.5"
@@ -264,12 +271,20 @@ export function VslScreen({ onContinue, videoSrc = vslAsset.url }: Props) {
             className="text-center"
             style={{ animation: "message-in 0.6s cubic-bezier(0.22,1,0.36,1) both" }}
           >
-            <CtaButton onClick={onContinue}>
-              QUERO VER O QUE TEM LÁ DENTRO 🔥
-            </CtaButton>
-            <p className="mt-1.5 text-[11px] text-muted-foreground">
-              Continua assistindo se quiser • só toca pra avançar
-            </p>
+            {autoContinue ? (
+              <p className="text-center text-[11.5px] font-semibold text-primary">
+                liberando opções...
+              </p>
+            ) : (
+              <>
+                <CtaButton onClick={onContinue}>
+                  QUERO VER O QUE TEM LÁ DENTRO 🔥
+                </CtaButton>
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
+                  Continua assistindo se quiser • só toca pra avançar
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <p className="text-center text-[11.5px] text-muted-foreground">
