@@ -127,7 +127,7 @@ export function ChatScreen() {
   );
 
   // Warm-up leve: apenas o poster e o chunk JS da VSL enquanto o usuário
-  // lê o chat. O VÍDEO (6MB) só baixa quando ele clicar em QUERO VER —
+  // lê o chat. O VÍDEO (6MB) só baixa quando a prévia automática entra —
   // isso reduz muito o uso de banda no carregamento inicial.
   useEffect(() => {
     const img = new Image();
@@ -181,6 +181,13 @@ export function ChatScreen() {
     if (vslCompletedRef.current) return;
     vslCompletedRef.current = true;
     setPhase("plans");
+    setItems((current) =>
+      current.map((item) =>
+        item.type === "vsl"
+          ? { id: item.id, type: "bot", content: "Prévia liberada ✅" }
+          : item,
+      ),
+    );
     botAfterTyping("Pronto. Agora escolhe o acesso que faz mais sentido pra você:", 450, 580);
     schedule(() => pushItem({ type: "plans" }), 1350);
   }, [botAfterTyping, pushItem, schedule]);
@@ -191,6 +198,7 @@ export function ChatScreen() {
       setSelectedPlan(plan);
       setWithBump(false);
       setPhase("pix");
+      setItems((current) => current.filter((item) => item.type !== "plans"));
       pushItem({ type: "user", content: <>Escolhi: {plan.title}</> });
       botAfterTyping("Fechado. Vou gerar seu Pix agora e liberar tudo automaticamente quando cair.", 360, 560);
       schedule(() => pushItem({ type: "pix" }), 1250);
