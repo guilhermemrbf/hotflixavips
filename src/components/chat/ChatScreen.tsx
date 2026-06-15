@@ -36,7 +36,6 @@ type TimelineItem =
   | { id: string; type: "bot"; content: React.ReactNode }
   | { id: string; type: "user"; content: React.ReactNode }
   | { id: string; type: "typing" }
-  | { id: string; type: "introCta" }
   | { id: string; type: "vsl" }
   | { id: string; type: "plans" }
   | { id: string; type: "bump" }
@@ -155,7 +154,16 @@ export function ChatScreen() {
       1250,
       720,
     );
-    schedule(() => pushItem({ type: "introCta" }), 2450);
+    schedule(() => {
+      setPhase("vsl");
+      pushItem({ type: "user", content: "Quero ver 🔥" });
+    }, 2450);
+    botAfterTyping(
+      "Separei uma prévia rápida pra você. Depois eu já libero as opções.",
+      2850,
+      520,
+    );
+    schedule(() => pushItem({ type: "vsl" }), 3820);
 
     return () => {
       timersRef.current.forEach(window.clearTimeout);
@@ -253,7 +261,6 @@ interface TimelineRendererProps {
   selectedPlan: Plan;
   withBump: boolean;
   vipLink: string;
-  onStart: () => void;
   onVslComplete: () => void;
   onPlanSelect: (plan: Plan) => void;
   onBumpConfirm: (withBump: boolean) => void;
@@ -266,7 +273,6 @@ function TimelineRenderer({
   selectedPlan,
   withBump,
   vipLink,
-  onStart,
   onVslComplete,
   onPlanSelect,
   onBumpConfirm,
@@ -275,28 +281,6 @@ function TimelineRenderer({
   if (item.type === "bot") return <Bubble delay={0}>{item.content}</Bubble>;
   if (item.type === "user") return <Bubble from="me" delay={0}>{item.content}</Bubble>;
   if (item.type === "typing") return <TypingBubble />;
-
-  if (item.type === "introCta") {
-    if (phase !== "intro") return null;
-    return (
-      <div
-        className="mt-4 text-center"
-        style={{ animation: "message-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
-      >
-        <p className="text-[18px] sm:text-[22px] leading-tight font-extrabold text-foreground">
-          ⚠️ Só quem chegou aqui <span className="text-gradient">pode ver.</span>
-        </p>
-        <div className="mt-3">
-          <CtaButton delay={0} onClick={onStart}>
-            QUERO VER 🔥
-          </CtaButton>
-          <p className="mt-1.5 text-[10.5px] text-muted-foreground">
-            Grátis pra ver • Sem cadastro
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   if (item.type === "vsl") {
     return (
