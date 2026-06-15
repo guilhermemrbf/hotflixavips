@@ -5,8 +5,7 @@ import type { Plan } from "./PlanCard";
 interface Props {
   plan: Plan;
   onConfirm: (withBump: boolean) => void;
-  onBack?: () => void;
-  showBack?: boolean;
+  onBack: () => void;
 }
 
 const BUMP_PRICE_CENTS = 390;
@@ -21,7 +20,7 @@ function parseCents(price: string): number {
   return Math.round(parseFloat(n) * 100);
 }
 
-export function OrderBumpScreen({ plan, onConfirm, onBack, showBack = true }: Props) {
+export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
   const [withBump, setWithBump] = useState(true);
   const [seconds, setSeconds] = useState(5 * 60);
 
@@ -44,14 +43,12 @@ export function OrderBumpScreen({ plan, onConfirm, onBack, showBack = true }: Pr
       className="space-y-2.5 px-0.5 pb-[calc(6rem+env(safe-area-inset-bottom))]"
       style={{ animation: "message-in 0.5s ease both" }}
     >
-      {showBack && onBack && (
-        <button
-          onClick={onBack}
-          className="text-[11px] text-muted-foreground hover:text-primary flex items-center gap-1 py-0.5 -ml-1"
-        >
-          ← trocar plano
-        </button>
-      )}
+      <button
+        onClick={onBack}
+        className="text-[11px] text-muted-foreground hover:text-primary flex items-center gap-1 py-0.5 -ml-1"
+      >
+        ← trocar plano
+      </button>
 
       {/* Header */}
       <div className="text-center">
