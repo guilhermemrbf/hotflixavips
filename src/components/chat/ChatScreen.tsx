@@ -81,10 +81,11 @@ export function ChatScreen() {
   const handlePlanSelect = (plan: Plan) => {
     setSelectedPlan(plan);
     setTimeline((prev) => {
+      const hasBump = prev.includes("bump");
       const filtered = prev.filter(
         (p) => p !== "bump" && p !== "pix" && p !== "success",
       );
-      return filtered.includes("bump") ? filtered : [...filtered, "bump"];
+      return hasBump ? filtered : [...filtered, "bump"];
     });
   };
 

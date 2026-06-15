@@ -40,7 +40,7 @@ export function OrderBumpScreen({ plan, onConfirm, onBack }: Props) {
 
   return (
     <div
-      className="space-y-2.5 px-0.5 pb-[calc(6rem+env(safe-area-inset-bottom))]"
+      className="space-y-2.5 px-0.5"
       style={{ animation: "message-in 0.5s ease both" }}
     >
       <button
